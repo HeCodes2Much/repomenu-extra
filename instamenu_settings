@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
-# graphical settings for instamenu
-[ -r ./instamenu/utils/functions.sh ] && source ./instamenu/utils/functions.sh
-
-asksetting() {
-    options=">>h Settings
+testsettings() {
+">>h Settings
 :b 墳Sound
 :b Display
 :g Network
@@ -21,13 +18,24 @@ asksetting() {
 :y Advanced
 :r Close Settings"
 
+":y Notification sound"
+}
+
+# graphical settings for instamenu
+[ -r ./instamenu/utils/functions.sh ] && source ./instamenu/utils/functions.sh
+
+asksetting() {
+    options=">>h Settings
+:b 墳Sound
+:b Install Software
+:r Close Settings"
+
     echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -H -x 10000
 }
 
 soundsettingsoptions() {
     options='>>h Sound settings
 :b ﰝSystem audio
-:y Notification sound
 :b Back'
 
     echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -H -x 10000

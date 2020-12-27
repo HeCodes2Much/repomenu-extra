@@ -1,0 +1,141 @@
+#!/usr/bin/env bash
+
+# graphical settings for instamenu
+[ -r ./instamenu/utils/functions.sh ] && source ./instamenu/utils/functions.sh
+
+asksetting() {
+    options=">>h Settings
+:b 墳Sound
+:b Display
+:g Network
+:b Install Software
+:y Appearance
+:b Bluetooth
+:g Power
+:b Keyboard
+:b Mouse
+:b Default Applications
+:b Language
+:g Time and Date
+:r Storage
+:y Advanced
+:r Close Settings"
+
+    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -H -x 10000
+}
+
+soundsettingsoptions() {
+    options='>>h Sound settings
+:b ﰝSystem audio
+:y Notification sound
+:b Back'
+
+    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -H -x 10000
+}
+
+soundsettings() {
+    LOOPSETTING="true"
+    while [ -n "$LOOPSETTING" ]; do
+        CHOICE="$(soundsettingsoptions)"
+        case "$CHOICE" in
+        *audio)
+            pavucontrol &
+            exit
+            ;;
+        *sound)
+            notificationsettings
+            exit
+            ;;
+        *)
+            asksetting
+            exit
+            ;;
+        esac
+    done
+}
+
+appearancesettingsoptions() {
+    options='>>h Appearance settings
+:b Application Appearance
+:y Wallpaper
+:b Back'
+
+    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -H -x 10000
+}
+
+appearancesettings() {
+    LOOPSETTING="true"
+    while [ -n "$LOOPSETTING" ]; do
+        CHOICE="$(appearancesettingsoptions)"
+        case $CHOICE in
+        *Appearance)
+            lxappearance
+            exit
+            ;;
+        *Wallpaper)
+            wallpapersettings
+            exit
+            ;;
+        *)
+            asksetting
+            exit
+            ;;
+        esac
+    done
+}
+
+
+
+
+LOOPSETTING="true"
+while [ -n "$LOOPSETTING" ]; do
+    SETTING="$(asksetting)"
+    unset LOOPSETTING
+    case "$SETTING" in
+    *Sound)
+        soundsettings
+        ;;
+    *Appearance)
+        appearancesettings
+        ;;
+    *Software)
+        instamenu_pacman &
+        ;;
+    *Display)
+        displaysettings
+        ;;
+    *Keyboard)
+        keyboardsettings
+        ;;
+    *Bluetooth)
+        bluetoothsettings
+        ;;
+    *Power)
+        xfce4-power-manager-settings &
+        ;;
+    *Language)
+        languagesettings
+        ;;
+    *Network)
+        networksettings
+        ;;
+    *Storage)
+        storagesettings
+        ;;
+    *Advanced)
+        advancedsettings
+        ;;
+    *Mouse)
+        mousesettings
+        ;;
+    *Date)
+        timesettings
+        ;;
+    *Applications)
+        defaultapplicationsettings
+        ;;
+    *Settings)
+        echo "Program terminated." && exit
+    ;;
+    esac
+done

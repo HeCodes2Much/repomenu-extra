@@ -1,0 +1,115 @@
+#! /bin/bash
+set -e
+
+#TODO: do xrandr queries only once and reuse the results.
+
+command="xrandr"
+function connectedDisplays {
+  xrandr | grep " connected" | cut -d " " -f 1
+}
+
+# List available resolutions for display identifier
+# given as a first parameter
+function resolutions {
+  local dp="$(xrandr | grep -i "$1" -A 40 | grep -v "$1")"
+  if [ "$(echo "$dp" | grep connected | wc -l)" -eq 0 ]; then
+    # Display was the last one listed
+    echo "$dp"
+  else
+    # Display was not the last one. Cut out the rest of the lines
+    echo "$dp" | grep -B 40 -m 1 connected | grep -v connected
+  fi
+}
+
+# TODO: Find a better way to do this.
+noOfActiveDisplays="$( \
+  xrandr --listactivemonitors \
+  | grep -i 'Monitors:' \
+  | sed -e 's/Monitors: //' \
+)"
+
+function isOn {
+  xrandr --listactivemonitors | grep $1 | wc -l
+}
+
+display=$(connectedDisplays | instamenu -c -l 10 -w -600 -i -h -1 -bw 4)
+command="$command --output $display"
+
+another=false
+if [ "$noOfActiveDisplays" -eq 2 ]; then
+  another="$( \
+    xrandr --listactivemonitors \
+    | grep -vi 'Monitors:' \
+    | grep -v $display \
+    | rev \
+    | cut -d ' ' -f 1 \
+    | rev \
+  )"
+fi
+
+# Select another display.
+# echo $another if it has value, othervise perform a instamenu prompt
+function selectAnother {
+  if [ "$another" ]; then
+    echo "$another"
+  else
+    connectedDisplays | grep -v "$display" | instamenu -c -l 10 -w -600 -i -h -1 -bw 4
+  fi
+}
+
+options="cancel"
+if [ "$(isOn $display)" -eq 1 ]; then
+  options="set resolution\nrotate left\nrotate right\ninvert\n$options"
+  if [ "$noOfActiveDisplays" -gt 1 ]; then
+    if [ "$noOfActiveDisplays" -gt 2 ]; then
+      options="mirror ...\n$options"
+      options="move above ...\n$options"
+      options="move below ...\n$options"
+      options="move left of ...\n$options"
+      options="move right of ...\n$options"
+    else
+      options="mirror $another \n$options"
+      options="move above $another \n$options"
+      options="move below $another \n$options"
+      options="move left of $another \n$options"
+      options="move right of $another \n$options"
+    fi
+    options="turn off\n$options"
+  fi
+else
+  options="turn on\n$options"
+fi
+
+opt=$(echo -e $options | instamenu -c -l 10 -w -600 -i -h -1 -bw 4)
+
+case "$opt" in
+  "cancel") 
+    exit 0 ;;
+  "turn on") 
+    command="$command --auto" ;;
+  "turn off") 
+    command="$command --off" ;;
+  "rotate left")
+    command="$command --rotate left" ;;
+  "rotate right")
+    command="$command --rotate right" ;;
+  "invert")
+    command="$command --rotate inverted" ;;
+  "set resolution")
+    resolution="$(resolutions $display | instamenu -c -l 10 -w -600 -i -h -1 -bw 4 | cut -d " " -f 4)"
+    command="$command --mode $resolution" ;;
+  "move right of"*) 
+    command="$command --right-of $(selectAnother)" ;;
+  "move left of"*)
+    command="$command --left-of $(selectAnother)" ;;
+  "move above"*) 
+    command="$command --above $(selectAnother)"  ;;
+  "move below"*) 
+    command="$command --below $(selectAnother)"  ;;
+  "mirror"*)
+    command="$command --same-as $(selectAnother)"  ;;
+esac
+
+if [ "$(echo -e "no\nyes" | instamenu -c -l 10 -w -600 -i -h -1 -bw 4 -q "run: $command")" == "yes" ]; then
+  echo "$command" | sh
+fi 

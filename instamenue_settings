@@ -1,4 +1,226 @@
 #!/usr/bin/env bash
+getsettings() {
+	EDITOR=$(gsettings get org.cynicalteam.instamenu.preferences editor | sed s/\'//g)
+	TERMINAL=$(gsettings get org.cynicalteam.instamenu.preferences terminal | sed s/\'//g)
+	WEBBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences webbrowser | sed s/\'//g)
+	FILEMANAGER=$(gsettings get org.cynicalteam.instamenu.preferences filemanager | sed s/\'//g)
+	MAILREADER=$(gsettings get org.cynicalteam.instamenu.preferences mailreader | sed s/\'//g)
+	TEXTEDITOR=$(gsettings get org.cynicalteam.instamenu.preferences texteditor | sed s/\'//g)
+	HYPERVISOR=$(gsettings get org.cynicalteam.instamenu.preferences hypervisor | sed s/\'//g)
+	GITBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences gitbrowser | sed s/\'//g)
+}
+
+selectfilemanager() {
+    getsettings
+    selectdefault filemanager "$FILEMANAGER" 
+}
+
+selectdefaultoptions() {
+    options=">>h Default (${2:-$1})
+:b Custom
+:b Back
+:r Close Settings"
+
+    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
+}
+
+selectdefault() {
+    LOOPSETTING="true"
+    while [ -n "$LOOPSETTING" ]; do
+        CHOICE="$(selectdefaultoptions $@)"
+        [ -n "$CHOICE" ] || exit
+        case "$CHOICE" in
+        *Custom)
+            CUSTOMAPP="$(imenu -i "Set custom $1")"
+            [ -z "$CUSTOMAPP" ] && echo "Program terminated." && exit
+            if imenu -c "Would you like to set $1 to $CUSTOMAPP?"; then
+                gsettings set org.cynicalteam.instamenu.preferences $1 $CUSTOMAPP
+                notify-send "instamenue_settings" "$1 changed from $2 to $CUSTOMAPP" && asksetting
+            else
+                defaultapplicationsettings
+                echo "Program terminated." && exit
+            fi
+            ;;
+        *Back)
+            defaultapplicationsettings
+            echo "Program terminated." && exit
+            ;;
+        *)
+            echo "Program terminated." && exit
+            ;;
+        esac
+    done
+}
+
+# graphical settings for instamenu
+[ -r ./instamenu/utils/functions.sh ] && source ./instamenu/utils/functions.sh
+
+defaultapplicationsettingsoptions() {
+    getsettings
+    options=">>h Default applications
+:b Browser
+:b Terminal Emulator
+:b File Manager
+:y Text Editor
+:b Back
+:r Close Settings"
+
+    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
+
+}
+
+defaultapplicationsettings() {
+    LOOPSETTING="true"
+    while [ -n "$LOOPSETTING" ]; do
+        CHOICE="$(defaultapplicationsettingsoptions)"
+        [ -n "$CHOICE" ] || exit
+        case "$CHOICE" in
+        *Manager)
+            selectfilemanager
+            ;;
+        *Back)
+            asksetting
+            echo "Program terminated." && exit
+            ;;
+        *)
+            echo "Program terminated." && exit
+            ;;
+        esac
+    done
+}
+
+soundsettingsoptions() {
+    options=">>h Sound settings
+:b ﰝSystem Audio
+:b Back
+:r Close Settings"
+
+    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
+}
+
+soundsettings() {
+    LOOPSETTING="true"
+    while [ -n "$LOOPSETTING" ]; do
+        CHOICE="$(soundsettingsoptions)"
+        [ -n "$CHOICE" ] || exit
+        case "$CHOICE" in
+        *Audio)
+            pavucontrol &
+            echo "Program terminated." && exit
+            ;;
+        *Back)
+            asksetting
+            echo "Program terminated." && exit
+            ;;
+        *)
+            echo "Program terminated." && exit
+            ;;
+        esac
+    done
+}
+
+appearancesettingsoptions() {
+    options=">>h Appearance settings
+:b Application Appearance
+:y Wallpaper
+:b Back
+:r Close Settings"
+
+    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
+}
+
+appearancesettings() {
+    LOOPSETTING="true"
+    while [ -n "$LOOPSETTING" ]; do
+        CHOICE="$(appearancesettingsoptions)"
+        [ -n "$CHOICE" ] || exit
+        case $CHOICE in
+        *Appearance)
+            lxappearance
+            echo "Program terminated." && exit
+            ;;
+        *Wallpaper)
+            wallpapersettings
+            echo "Program terminated." && exit
+            ;;
+        *Back)
+            asksetting
+            echo "Program terminated." && exit
+            ;;
+        *)
+            echo "Program terminated." && exit
+            ;;
+        esac
+    done
+}
+
+asksettingoptions() {
+    options=">>h Settings
+:b 墳Sound
+:b Install Software
+:b Default Applications
+:r Close Settings"
+
+    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
+}
+
+asksetting() {
+    LOOPSETTING="true"
+    while [ -n "$LOOPSETTING" ]; do
+        SETTING="$(asksettingoptions)"
+        [ -n "$SETTING" ] || exit
+        unset LOOPSETTING
+        case "$SETTING" in
+        *Sound)
+            soundsettings
+            ;;
+        *Appearance)
+            appearancesettings
+            ;;
+        *Software)
+            instamenue_pacman &
+            ;;
+        *Display)
+            displaysettings
+            ;;
+        *Keyboard)
+            keyboardsettings
+            ;;
+        *Bluetooth)
+            bluetoothsettings
+            ;;
+        *Power)
+            xfce4-power-manager-Search Settings &
+            ;;
+        *Language)
+            languagesettings
+            ;;
+        *Network)
+            networksettings
+            ;;
+        *Storage)
+            storagesettings
+            ;;
+        *Advanced)
+            advancedsettings
+            ;;
+        *Mouse)
+            mousesettings
+            ;;
+        *Date)
+            timesettings
+            ;;
+        *Applications)
+            defaultapplicationsettings
+            ;;
+        *)
+            echo "Program terminated." && exit
+        ;;
+        esac
+    done
+}
+
+asksetting
 
 testsettings() {
 ">>h Settings
@@ -11,139 +233,10 @@ testsettings() {
 :g Power
 :b Keyboard
 :b Mouse
-:b Default Applications
 :b Language
 :g Time and Date
 :r Storage
 :y Advanced
 :r Close Settings"
-
 ":y Notification sound"
 }
-
-# graphical settings for instamenu
-[ -r ./instamenu/utils/functions.sh ] && source ./instamenu/utils/functions.sh
-
-asksetting() {
-    options=">>h Settings
-:b 墳Sound
-:b Install Software
-:r Close Settings"
-
-    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -H -x 10000
-}
-
-soundsettingsoptions() {
-    options='>>h Sound settings
-:b ﰝSystem audio
-:b Back'
-
-    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -H -x 10000
-}
-
-soundsettings() {
-    LOOPSETTING="true"
-    while [ -n "$LOOPSETTING" ]; do
-        CHOICE="$(soundsettingsoptions)"
-        case "$CHOICE" in
-        *audio)
-            pavucontrol &
-            exit
-            ;;
-        *sound)
-            notificationsettings
-            exit
-            ;;
-        *)
-            asksetting
-            exit
-            ;;
-        esac
-    done
-}
-
-appearancesettingsoptions() {
-    options='>>h Appearance settings
-:b Application Appearance
-:y Wallpaper
-:b Back'
-
-    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -H -x 10000
-}
-
-appearancesettings() {
-    LOOPSETTING="true"
-    while [ -n "$LOOPSETTING" ]; do
-        CHOICE="$(appearancesettingsoptions)"
-        case $CHOICE in
-        *Appearance)
-            lxappearance
-            exit
-            ;;
-        *Wallpaper)
-            wallpapersettings
-            exit
-            ;;
-        *)
-            asksetting
-            exit
-            ;;
-        esac
-    done
-}
-
-
-
-
-LOOPSETTING="true"
-while [ -n "$LOOPSETTING" ]; do
-    SETTING="$(asksetting)"
-    unset LOOPSETTING
-    case "$SETTING" in
-    *Sound)
-        soundsettings
-        ;;
-    *Appearance)
-        appearancesettings
-        ;;
-    *Software)
-        instamenu_pacman &
-        ;;
-    *Display)
-        displaysettings
-        ;;
-    *Keyboard)
-        keyboardsettings
-        ;;
-    *Bluetooth)
-        bluetoothsettings
-        ;;
-    *Power)
-        xfce4-power-manager-settings &
-        ;;
-    *Language)
-        languagesettings
-        ;;
-    *Network)
-        networksettings
-        ;;
-    *Storage)
-        storagesettings
-        ;;
-    *Advanced)
-        advancedsettings
-        ;;
-    *Mouse)
-        mousesettings
-        ;;
-    *Date)
-        timesettings
-        ;;
-    *Applications)
-        defaultapplicationsettings
-        ;;
-    *Settings)
-        echo "Program terminated." && exit
-    ;;
-    esac
-done

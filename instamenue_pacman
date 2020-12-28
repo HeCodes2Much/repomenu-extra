@@ -1,45 +1,61 @@
 #!/bin/bash
+getsettings() {
+	EDITOR=$(gsettings get org.cynicalteam.instamenu.preferences editor | sed s/\'//g)
+	TERMINAL=$(gsettings get org.cynicalteam.instamenu.preferences terminal | sed s/\'//g)
+	WEBBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences webbrowser | sed s/\'//g)
+	FILEMANAGER=$(gsettings get org.cynicalteam.instamenu.preferences filemanager | sed s/\'//g)
+	MAILREADER=$(gsettings get org.cynicalteam.instamenu.preferences mailreader | sed s/\'//g)
+	TEXTEDITOR=$(gsettings get org.cynicalteam.instamenu.preferences texteditor | sed s/\'//g)
+	HYPERVISOR=$(gsettings get org.cynicalteam.instamenu.preferences hypervisor | sed s/\'//g)
+	GITBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences gitbrowser | sed s/\'//g)
+}
 
 # simple pacman GUI for instantOS
 
 choicemenu() {
-    echo ':g Install
+    getsettings
+    options=":g Install
 :b 蓮Browse
 :r Remove
 :b Install AUR package
 :b Update
-:r Close' | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q  "${1:-insta_pacman...}" -H -x 10000
+:r Close Pacman"
+
+    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q  "${1:-Settings...}" -H -x 10000
 }
 
-CHOICE="$(choicemenu)"
+LOOPSETTING="true"
+while [ -n "$LOOPSETTING" ]; do
 
-[ -n "$CHOICE" ] || exit
-
-case "$CHOICE" in
-*Install)
-    PACKAGE="$(imenu -i 'enter package name')"
-    [ -n "$PACKAGE" ] || exit
-    echo "installing $PACKAGE"
-    alacritty -e bash -c "(sudo pacman -S $PACKAGE) && notify-send 'finished installing '$PACKAGE"
-    ;;
-*Remove)
-    PACKAGE="$(imenu -i 'enter package name')"
-    [ -n "$PACKAGE" ] || exit
-    alacritty -e bash -c "(sudo pacman -R $PACKAGE) && notify-send finished\ uninstalling\ $PACKAGE"
-    ;;
-*Browse)
-    pamac-manager &
-    exit
-    ;;
-*package)
-    PACKAGE="$(imenu -i 'enter package name')"
-    [ -n "$PACKAGE" ] || exit
-    alacritty -e bash -c "(yay -S $PACKAGE) && notify-send 'finished installing '$PACKAGE"
-    ;;
-*Update)
-    alacritty -e bash -c "(yay -Syyu) && notify-send 'finished updating'"
-    ;;
-*Close)
-    instamenu_settings &
-    ;;
-esac
+    CHOICE="$(choicemenu)"
+    [ -n "$CHOICE" ] || exit
+    case "$CHOICE" in
+    *Install)
+        PACKAGE="$(imenu -i 'enter package name')"
+        [ -n "$PACKAGE" ] || echo "Program terminated." && exit
+        echo "installing $PACKAGE"
+        $TERMINAL -e bash -c "(sudo pacman -S $PACKAGE) && notify-send 'instamenue_pacman' 'finished installing '$PACKAGE"
+        ;;
+    *Remove)
+        PACKAGE="$(imenu -i 'enter package name')"
+        [ -n "$PACKAGE" ] || echo "Program terminated." && exit
+        $TERMINAL -e bash -c "(sudo pacman -R $PACKAGE) && notify-send 'instamenue_pacman' 'finished uninstalling '$PACKAGE"
+        ;;
+    *Browse)
+        pamac-manager &
+        echo "Program terminated." && exit
+        ;;
+    *package)
+        PACKAGE="$(imenu -i 'enter package name')"
+        [ -n "$PACKAGE" ] || echo "Program terminated." && exit
+        $TERMINAL -e bash -c "(yay -S $PACKAGE) && notify-send 'instamenue_pacman' 'finished installing '$PACKAGE"
+        ;;
+    *Update)
+        $TERMINAL -e bash -c "(yay -Syyu) && notify-send 'instamenue_pacman' 'finished updating'"
+        ;;
+    *Pacman)
+        instamenue_settings &
+        echo "Program terminated." && exit
+        ;;
+    esac
+done

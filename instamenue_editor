@@ -1,4 +1,15 @@
 #!/bin/sh
+getsettings() {
+	EDITOR=$(gsettings get org.cynicalteam.instamenu.preferences editor | sed s/\'//g)
+	TERMINAL=$(gsettings get org.cynicalteam.instamenu.preferences terminal | sed s/\'//g)
+	WEBBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences webbrowser | sed s/\'//g)
+	FILEMANAGER=$(gsettings get org.cynicalteam.instamenu.preferences filemanager | sed s/\'//g)
+	MAILREADER=$(gsettings get org.cynicalteam.instamenu.preferences mailreader | sed s/\'//g)
+	TEXTEDITOR=$(gsettings get org.cynicalteam.instamenu.preferences texteditor | sed s/\'//g)
+	HYPERVISOR=$(gsettings get org.cynicalteam.instamenu.preferences hypervisor | sed s/\'//g)
+	GITBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences gitbrowser | sed s/\'//g)
+}
+
 asksetting() {
 	options=$(ls $HOME/.config/instamenu/scripts/)
 
@@ -7,6 +18,7 @@ $options" | instamenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
 }
 
 LOOPSETTING="true"
+getsettings
 while [ -n "$LOOPSETTING" ]; do
 	FILE="$HOME/.config/instamenu/scripts/$(asksetting)"
     unset LOOPSETTING

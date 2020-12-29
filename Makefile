@@ -18,4 +18,4 @@ uninstall:
 	rm -rf $(DESTDIR)$(PREFIX)/bin/instamenue_*
 	rm -rf $(DESTDIR)$(SHAREPREFIX)/instamenu/emoji-list
 
-.PHONY: all dist install uninstall
+.PHONY: all install uninstall

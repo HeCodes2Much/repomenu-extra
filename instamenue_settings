@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 getsettings() {
-	EDITOR=$(gsettings get org.cynicalteam.instamenu.preferences editor | sed s/\'//g)
 	TERMINAL=$(gsettings get org.cynicalteam.instamenu.preferences terminal | sed s/\'//g)
 	WEBBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences webbrowser | sed s/\'//g)
 	FILEMANAGER=$(gsettings get org.cynicalteam.instamenu.preferences filemanager | sed s/\'//g)
@@ -10,15 +9,45 @@ getsettings() {
 	GITBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences gitbrowser | sed s/\'//g)
 }
 
+selectterminal() {
+    getsettings
+    selectdefault terminal "$TERMINAL" 
+}
+
+selectwebbrowser() {
+    getsettings
+    selectdefault webbrowser "$WEBBROWSER" 
+}
+
 selectfilemanager() {
     getsettings
     selectdefault filemanager "$FILEMANAGER" 
 }
 
+selectmailreader() {
+    getsettings
+    selectdefault mailreader "$MAILREADER" 
+}
+
+selecttexteditor() {
+    getsettings
+    selectdefault texteditor "$TEXTEDITOR" 
+}
+
+selecthypervisor() {
+    getsettings
+    selectdefault hypervisor "$HYPERVISOR" 
+}
+
+selectgitbrowser() {
+    getsettings
+    selectdefault gitbrowser "$GITBROWSER" 
+}
+
 selectdefaultoptions() {
     options=">>h Default (${2:-$1})
 :b Custom
-:b Back
+:y Back
 :r Close Settings"
 
     echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
@@ -58,11 +87,14 @@ selectdefault() {
 defaultapplicationsettingsoptions() {
     getsettings
     options=">>h Default applications
-:b Browser
 :b Terminal Emulator
-:b File Manager
-:y Text Editor
-:b Back
+:b Web Browser
+:b File Manager
+:b Mail Reader
+:b Text Editor
+:b Hypervisor
+:b Git Client
+:y Back
 :r Close Settings"
 
     echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
@@ -75,8 +107,26 @@ defaultapplicationsettings() {
         CHOICE="$(defaultapplicationsettingsoptions)"
         [ -n "$CHOICE" ] || exit
         case "$CHOICE" in
+        *Emulator)
+            selectterminal
+            ;;
+        *Browser)
+            selectwebbrowser
+            ;;
         *Manager)
             selectfilemanager
+            ;;
+        *Reader)
+            selectmailreader
+            ;;
+        *Editor)
+            selecttexteditor
+            ;;
+        *Hypervisor)
+            selecthypervisor
+            ;;
+        *Client)
+            selectgitbrowser
             ;;
         *Back)
             asksetting
@@ -92,7 +142,7 @@ defaultapplicationsettings() {
 soundsettingsoptions() {
     options=">>h Sound settings
 :b ﰝSystem Audio
-:b Back
+:y Back
 :r Close Settings"
 
     echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
@@ -122,8 +172,8 @@ soundsettings() {
 appearancesettingsoptions() {
     options=">>h Appearance settings
 :b Application Appearance
-:y Wallpaper
-:b Back
+:b Wallpaper
+:y Back
 :r Close Settings"
 
     echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
@@ -226,17 +276,17 @@ testsettings() {
 ">>h Settings
 :b 墳Sound
 :b Display
-:g Network
+:b Network
 :b Install Software
-:y Appearance
+:b Appearance
 :b Bluetooth
-:g Power
+:b Power
 :b Keyboard
 :b Mouse
 :b Language
 :g Time and Date
-:r Storage
-:y Advanced
+:b Storage
+:b Advanced
+:b Notification sound
 :r Close Settings"
-":y Notification sound"
 }

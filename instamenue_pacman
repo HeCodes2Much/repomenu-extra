@@ -1,6 +1,5 @@
 #!/bin/bash
 getsettings() {
-	EDITOR=$(gsettings get org.cynicalteam.instamenu.preferences editor | sed s/\'//g)
 	TERMINAL=$(gsettings get org.cynicalteam.instamenu.preferences terminal | sed s/\'//g)
 	WEBBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences webbrowser | sed s/\'//g)
 	FILEMANAGER=$(gsettings get org.cynicalteam.instamenu.preferences filemanager | sed s/\'//g)

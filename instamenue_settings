@@ -204,9 +204,50 @@ appearancesettings() {
     done
 }
 
+displaysettingsoptions() {
+    options=">>h Display Settings
+:b Change Display Settings
+:g Save Current Settings
+:g Load Current Settings
+:y Back
+:r Close Settings"
+
+    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
+}
+
+displaysettings() {
+    LOOPSETTING="true"
+    while [ -n "$LOOPSETTING" ]; do
+        CHOICE="$(displaysettingsoptions)"
+        [ -n "$CHOICE" ] || exit
+        case $CHOICE in
+        *Display*)
+            instamenue_randr &
+            ;;
+        *Save*)
+            notify-send "instamenue_settings" "Saving monitor settings"
+            autorandr --force --save $XDG_CURRENT_DESKTOP
+            ;;
+        *Load*)
+            notify-send "instamenue_settings" "Loading monitor settings"
+            autorandr --force --load $XDG_CURRENT_DESKTOP
+            ;;
+        *Back)
+            asksetting
+            echo "Program terminated." && exit
+            ;;
+        *)
+            echo "Program terminated." && exit
+            ;;
+        esac
+    done
+}
+
 asksettingoptions() {
     options=">>h Settings
 :b 墳Sound
+:b Network
+:b Display
 :b Install Software
 :b Default Applications
 :r Close Settings"
@@ -246,7 +287,7 @@ asksetting() {
             languagesettings
             ;;
         *Network)
-            networksettings
+            instamenue_network &
             ;;
         *Storage)
             storagesettings
@@ -275,9 +316,7 @@ asksetting
 testsettings() {
 ">>h Settings
 :b 墳Sound
-:b Display
 :b Network
-:b Install Software
 :b Appearance
 :b Bluetooth
 :b Power

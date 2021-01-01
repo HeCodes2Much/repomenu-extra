@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # instamenu-systemctl-user
 # Use systemctl --user from instamenu. Useful in tiling wms.

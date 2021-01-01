@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 emoji_list=/usr/share/instamenu/emoji-list
 

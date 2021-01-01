@@ -1,29 +1,43 @@
 #!/bin/sh
 getsettings() {
-	TERMINAL=$(gsettings get org.cynicalteam.instamenu.preferences terminal | sed s/\'//g)
-	WEBBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences webbrowser | sed s/\'//g)
-	FILEMANAGER=$(gsettings get org.cynicalteam.instamenu.preferences filemanager | sed s/\'//g)
-	MAILREADER=$(gsettings get org.cynicalteam.instamenu.preferences mailreader | sed s/\'//g)
-	TEXTEDITOR=$(gsettings get org.cynicalteam.instamenu.preferences texteditor | sed s/\'//g)
-	HYPERVISOR=$(gsettings get org.cynicalteam.instamenu.preferences hypervisor | sed s/\'//g)
-	GITBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences gitbrowser | sed s/\'//g)
+    TERMINAL=$(gsettings get org.cynicalteam.instamenu.preferences terminal | sed s/\'//g)
+    WEBBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences webbrowser | sed s/\'//g)
+    FILEMANAGER=$(gsettings get org.cynicalteam.instamenu.preferences filemanager | sed s/\'//g)
+    MAILREADER=$(gsettings get org.cynicalteam.instamenu.preferences mailreader | sed s/\'//g)
+    TEXTEDITOR=$(gsettings get org.cynicalteam.instamenu.preferences texteditor | sed s/\'//g)
+    HYPERVISOR=$(gsettings get org.cynicalteam.instamenu.preferences hypervisor | sed s/\'//g)
+    GITBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences gitbrowser | sed s/\'//g)
 }
 
 asksetting() {
-	options=$(ls $HOME/.config/instamenu/scripts/)
+    options=$(ls $HOME/.config/instamenu/scripts/)
 
     echo ">>h Work on which script
 $options" | instamenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
 }
 
+runeditor() {
+    case $TERMINAL in
+    alacritty)
+        $TERMINAL --title=$TEXTEDITOR --class=$TEXTEDITOR,$TEXTEDITOR -e $TEXTEDITOR $FILE
+        ;;
+    kitty)
+        $TERMINAL --title=$TEXTEDITOR --name=$TEXTEDITOR --class=$TEXTEDITOR -e $TEXTEDITOR $FILE
+        ;;
+    *)
+        $TERMINAL -e $TEXTEDITOR $FILE
+        ;;
+    esac
+}
+
 LOOPSETTING="true"
 getsettings
 while [ -n "$LOOPSETTING" ]; do
-	FILE="$HOME/.config/instamenu/scripts/$(asksetting)"
+    FILE="$HOME/.config/instamenu/scripts/$(asksetting)"
     unset LOOPSETTING
-	if [ -f "$FILE" ]; then
-		$TEXTEDITOR $FILE
-	else 
-		echo "Program terminated." && exit 1
-	fi
+    if [ -f "$FILE" ]; then
+        runeditor
+    else 
+        echo "Program terminated." && exit 1
+    fi
 done

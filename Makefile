@@ -4,8 +4,8 @@
 include config.mk
 
 clean:
-	rm -rf $(DESTDIR)$(PREFIX)/bin/instamenue_*
-	rm -rf $(DESTDIR)$(SHAREPREFIX)/instamenu/emoji-list
+	rm -rf $(DESTDIR)$(PREFIX)/bin/instamenue_*\
+		$(DESTDIR)$(SHAREPREFIX)/instamenu/emoji-list
 
 install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
@@ -15,7 +15,7 @@ install: all
 
 
 uninstall:
-	rm -rf $(DESTDIR)$(PREFIX)/bin/instamenue_*
-	rm -rf $(DESTDIR)$(SHAREPREFIX)/instamenu/emoji-list
+	rm -rf $(DESTDIR)$(PREFIX)/bin/instamenue_*\
+		$(DESTDIR)$(SHAREPREFIX)/instamenu/emoji-list
 
 .PHONY: all install uninstall

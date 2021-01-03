@@ -11,9 +11,14 @@
 # github:     https://github.com/TheCynicalTeam/instamenu-extra
 # date:       2021-01-03 12:34:47.440579
 #
+
+instantmenu() {
+    instamenu -wm -c -w 750 -l 20 -p "Youtube Subs:"
+}
+
 # -/-/-/-/- Settings -/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 : "${SUBS_FILE:=${HOME}/.config/instamenu/subs.ini}"
-: "${SUBS_MENU_PROG:=instamenu -c -w 750 -l 10 -p Subs:}"
+: "${SUBS_MENU_PROG:=instantmenu}"
 : "${SUBS:=${HOME}/.cache/subs}"
 : "${SUBS_LINKS:=$SUBS/links}"
 : "${SUBS_OPEN:=firefox}"
@@ -29,7 +34,7 @@ die() {
 }
 
 usage() {
-    die 'Usage: subs [-m no-video] [-g gen-links] [-u update-cache] [-d daemonize]'
+    die 'Usage: instamenue_youtube_subs [-c cat_subs] [-g gen_links] [-u update_subs] [-d daemonize]'
 }
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*

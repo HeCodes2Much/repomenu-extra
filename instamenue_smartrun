@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# path:       /usr/bin/instamenue_smartrun
+# author:     TheCynicalTeam [wayne6324@gmail.com]
+# github:     https://github.com/TheCynicalTeam/instamenu-extra
+# date:       2021-01-03 12:34:47.440579
+
 asksetting() {
     prefix="/bin/"
     options1=$(printf '%s\n' ${PATH//:/\/* } | grep "instamenu_" | sed '/path/d' | grep -oP "^$prefix\K.*")

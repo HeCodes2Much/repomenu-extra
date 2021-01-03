@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# path:       /usr/bin/instamenue_emoji
+# author:     TheCynicalTeam [wayne6324@gmail.com]
+# github:     https://github.com/TheCynicalTeam/instamenu-extra
+# date:       2021-01-03 12:34:47.440579
+
 emoji_list=/usr/share/instamenu/emoji-list
 
 emoji_groups=">>h Which Emoji Group?
@@ -17,7 +22,7 @@ emoji_groups_menu=$(printf "%s\n" "$emoji_groups" | \
     instamenu -s -bw 4 -w 600 -c -i -l 20 -q "Selections:")
 
 go_back() {
-    /bin/sh /usr/bin/instamenu_emoji
+    /bin/sh /usr/bin/instamenue_emoji
 }
 
 case "$emoji_groups_menu" in

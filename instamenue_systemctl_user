@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-# instamenu-systemctl-user
+# path:       /usr/bin/instamenue_systemctl_user
+# author:     TheCynicalTeam [wayne6324@gmail.com]
+# github:     https://github.com/TheCynicalTeam/instamenu-extra
+# date:       2021-01-03 12:34:47.440579
+
 # Use systemctl --user from instamenu. Useful in tiling wms.
 
 unset opts

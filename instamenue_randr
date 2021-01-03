@@ -1,4 +1,10 @@
 #! /bin/bash
+
+# path:       /usr/bin/instamenue_randr
+# author:     TheCynicalTeam [wayne6324@gmail.com]
+# github:     https://github.com/TheCynicalTeam/instamenu-extra
+# date:       2021-01-03 12:34:47.440579
+
 set -e
 
 #TODO: do xrandr queries only once and reuse the results.

@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+
+# path:       /usr/bin/instamenue_pacman
+# author:     TheCynicalTeam [wayne6324@gmail.com]
+# github:     https://github.com/TheCynicalTeam/instamenu-extra
+# date:       2021-01-03 12:34:47.440579
+
 getsettings() {
     TERMINAL=$(gsettings get org.cynicalteam.instamenu.preferences terminal | sed s/\'//g)
     WEBBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences webbrowser | sed s/\'//g)

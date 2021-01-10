@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #
 # Watch your youtube subscriptions without a youtube account
 # via curl, instamenu, browser and basic unix commands.
@@ -17,7 +17,7 @@ instantmenu() {
 }
 
 # -/-/-/-/- Settings -/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
-: "${SUBS_FILE:=${HOME}/.config/instamenu/subs.ini}"
+: "${SUBS_FILE:=${HOME}/.config/instamenu/configs/subs.ini}"
 : "${SUBS_MENU_PROG:=instantmenu}"
 : "${SUBS:=${HOME}/.cache/subs}"
 : "${SUBS_LINKS:=$SUBS/links}"

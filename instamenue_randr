@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 # path:       /usr/bin/instamenue_randr
 # author:     TheCynicalTeam [wayne6324@gmail.com]
@@ -89,11 +89,11 @@ fi
 opt=$(echo -e $options | instamenu -c -l 10 -w -600 -i -h -1 -bw 4)
 
 case "$opt" in
-  "cancel") 
+  "cancel")
     exit 0 ;;
-  "turn on") 
+  "turn on")
     command="$command --auto" ;;
-  "turn off") 
+  "turn off")
     command="$command --off" ;;
   "rotate left")
     command="$command --rotate left" ;;
@@ -104,13 +104,13 @@ case "$opt" in
   "set resolution")
     resolution="$(resolutions $display | instamenu -c -l 10 -w -600 -i -h -1 -bw 4 | cut -d " " -f 4)"
     command="$command --mode $resolution" ;;
-  "move right of"*) 
+  "move right of"*)
     command="$command --right-of $(selectAnother)" ;;
   "move left of"*)
     command="$command --left-of $(selectAnother)" ;;
-  "move above"*) 
+  "move above"*)
     command="$command --above $(selectAnother)"  ;;
-  "move below"*) 
+  "move below"*)
     command="$command --below $(selectAnother)"  ;;
   "mirror"*)
     command="$command --same-as $(selectAnother)"  ;;
@@ -118,4 +118,4 @@ esac
 
 if [ "$(echo -e "no\nyes" | instamenu -c -l 10 -w -600 -i -h -1 -bw 4 -q "run: $command")" == "yes" ]; then
   echo "$command" | sh
-fi 
+fi

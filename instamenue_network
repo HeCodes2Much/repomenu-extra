@@ -42,7 +42,7 @@ LOOP = GLib.MainLoop()
 CONNS = CLIENT.get_connections()
 
 CONF = configparser.ConfigParser()
-CONF.read(expanduser("~/.config/instamenu/networkmanager-config.ini"))
+CONF.read(expanduser("~/.config/instamenu/configs/networkmanager-config.ini"))
 
 def instamenu_cmd(num_lines, width, prompt="Networks", active_lines=None):  # pylint: disable=too-many-branches
     """Parse config.ini if it exists and add options to the instamenu command

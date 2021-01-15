@@ -22,27 +22,13 @@ asksetting() {
 $options" | instamenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
 }
 
-runeditor() {
-    case $TERMINAL in
-    alacritty)
-        $TERMINAL --title=$TEXTEDITOR --class=$TEXTEDITOR,$TEXTEDITOR -e $TEXTEDITOR $FILE
-        ;;
-    kitty)
-        $TERMINAL --title=$TEXTEDITOR --name=$TEXTEDITOR --class=$TEXTEDITOR -e $TEXTEDITOR $FILE
-        ;;
-    *)
-        $TERMINAL -e $TEXTEDITOR $FILE
-        ;;
-    esac
-}
-
 LOOPSETTING="true"
 getsettings
 while [ -n "$LOOPSETTING" ]; do
     FILE="$HOME/.config/instamenu/scripts/$(asksetting)"
     unset LOOPSETTING
     if [ -f "$FILE" ]; then
-        runeditor
+        $TEXTEDITOR $FILE
     else 
         echo "Program terminated." && exit 1
     fi

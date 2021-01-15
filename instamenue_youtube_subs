@@ -225,9 +225,9 @@ daemonize() {
 
     while true ; do
         if ! cmp "${SUBS_FILE:=${HOME}/.config/instamenu/subs.ini}" "$daemon_file" ; then
-            gen_links
             cp -f "${SUBS_FILE:=${HOME}/.config/instamenu/subs.ini}" "$daemon_file"
         fi
+        gen_links
         update_subs
         interval=${SUBS_DAEMON_INTERVAL:-$(( 10 * 60 ))}
         printf 'Sleeping for %s seconds...\n' "$interval"

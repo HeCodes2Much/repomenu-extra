@@ -6,9 +6,8 @@
 # date:       2021-01-03 12:34:47.440579
 
 asksetting() {
-    prefix="/bin/"
-    options1=$(printf '%s\n' ${PATH//:/\/* } | grep "instamenu_" | sed '/path/d' | grep -oP "^$prefix\K.*")
-    options2=$(printf '%s\n' ${PATH//:/\/* } | grep "instamenue_" | sed '/smartrun/d' | grep -oP "^$prefix\K.*")
+    options1=$(printf '%s\n' ${PATH//:/\/* } | grep "instamenu_" | sed 's|^.*/||g' | awk '!NF || !seen[$0]++')
+    options2=$(printf '%s\n' ${PATH//:/\/* } | grep "instamenue_" | sed 's|^.*/||g' | awk '!NF || !seen[$0]++')
     echo ">>h Select App to run
 $options1
 $options2" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -H -x 10000

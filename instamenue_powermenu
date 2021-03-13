@@ -37,15 +37,24 @@ while [ -n "$LOOPSETTING" ]; do
     CHOICE="$(asksetting)"
     [ -n "$CHOICE" ] || exit
     unset LOOPSETTING
-   if [[ $CHOICE = "Logout" ]]; then
-       pkill $DESKTOP_SESSION
-    elif [[ $chosen = "Shutdown" ]]; then
-	   systemctl poweroff
-    elif [[ $chosen = "Restart" ]]; then
-	   systemctl reboot
-    elif [[ $chosen = "Sleep" ]]; then
-	   systemctl suspend
-    else
-        echo "Program terminated." && exit 1
-    fi
+    case "$CHOICE" in
+      *Logout)
+        pkill $DESKTOP_SESSION
+        ;;
+      *Lock)
+        multimonitorlock -l -- --timestr="%H:%M"
+        ;;
+      *Shutdown)
+        systemctl poweroff
+        ;;
+      *Restart)
+        systemctl reboot
+        ;;
+      *Sleep)
+        systemctl suspend
+        ;;
+      *)
+      	echo "Program terminated." && exit 1
+      	;;
+    esac
 done

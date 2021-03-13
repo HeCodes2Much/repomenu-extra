@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+#
+getuptime() {
+    uptime -p >/dev/null 2>&1
+
+    if [ "$?" -eq 0 ]; then
+      # Supports most Linux distro
+      # when the machine is up for less than '0' minutes then
+      # 'uptime -p' returns ONLY 'up', so we need to set a default value
+      UP_SET_OR_EMPTY=$(uptime -p | awk -F 'up ' '{print $2}')
+      UP=${UP_SET_OR_EMPTY:-'less than a minute'}
+    else
+      # Supports Mac OS X, Debian 7, etc
+      UP=$(uptime | sed -E 's/^[^,]*up *//; s/mins/minutes/; s/hrs?/hours/;
+      s/([[:digit:]]+):0?([[:digit:]]+)/\1 hours, \2 minutes/;
+      s/^1 hours/1 hour/; s/ 1 hours/ 1 hour/;
+      s/min,/minutes,/; s/ 0 minutes,/ less than a minute,/; s/ 1 minutes/ 1 minute/;
+      s/  / /; s/, *[[:digit:]]* users?.*//')
+    fi
+
+    echo "$UP"
+}
+
+asksetting() {
+    options=":g Lock
+:y 望Sleep
+:b Logout
+:r Restart
+:r 襤Shutdown"
+
+    echo ">>h Uptime: $(getuptime)
+$options" | instamenu -wm -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
+}
+
+LOOPSETTING="true"
+while [ -n "$LOOPSETTING" ]; do
+    CHOICE="$(asksetting)"
+    [ -n "$CHOICE" ] || exit
+    unset LOOPSETTING
+   if [[ $CHOICE = "Logout" ]]; then
+       pkill $DESKTOP_SESSION
+    elif [[ $chosen = "Shutdown" ]]; then
+	   systemctl poweroff
+    elif [[ $chosen = "Restart" ]]; then
+	   systemctl reboot
+    elif [[ $chosen = "Sleep" ]]; then
+	   systemctl suspend
+    else
+        echo "Program terminated." && exit 1
+    fi
+done

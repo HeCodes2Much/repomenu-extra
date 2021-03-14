@@ -44,7 +44,7 @@ CONNS = CLIENT.get_connections()
 CONF = configparser.ConfigParser()
 CONF.read(expanduser("~/.config/instamenu/configs/networkmanager-config.ini"))
 
-def instamenu_cmd(num_lines, width, prompt="Networks", active_lines=None):  # pylint: disable=too-many-branches
+def instamenu_cmd(num_lines, prompt="Networks", active_lines=None):  # pylint: disable=too-many-branches
     """Parse config.ini if it exists and add options to the instamenu command
 
     Args: args - num_lines: number of lines to display
@@ -55,7 +55,7 @@ def instamenu_cmd(num_lines, width, prompt="Networks", active_lines=None):  # py
     """
     instamenu_command = "instamenu"
     if not CONF.sections():
-        res = [instamenu_command, "-i", "-l", str(num_lines), "-p", str(prompt), "-w", str(width)]
+        res = [instamenu_command, "-i", "-l", str(num_lines), "-p", str(prompt)]
         res.extend(sys.argv[1:])
         return res
     if CONF.has_section('instamenu'):
@@ -73,7 +73,7 @@ def instamenu_cmd(num_lines, width, prompt="Networks", active_lines=None):  # py
         elif "p" in args_dict:
             del args_dict["p"]
         if "rofi" in instamenu_command:
-            lines = "-i -dmenu -lines"
+            lines = "-i -instamenu -lines"
             # rofi doesn't support 0 length line, it requires at least -lines=1
             # see https://github.com/DaveDavenport/rofi/issues/252
             num_lines = num_lines or 1
@@ -88,9 +88,6 @@ def instamenu_cmd(num_lines, width, prompt="Networks", active_lines=None):  # py
             del args_dict['l']
         else:
             lines = "{} {}".format(lines, num_lines)
-        if "w" in args_dict:
-            width = int(args_dict['w'])
-            del args_dict["w"]
         if "pinentry" in args_dict:
             del args_dict["pinentry"]
         if "compact" in args_dict:
@@ -119,7 +116,7 @@ def instamenu_cmd(num_lines, width, prompt="Networks", active_lines=None):  # py
         if instamenu_password is True:
             instamenu_args.extend(["-P"])
     extras = (["-" + str(k), str(v)] for (k, v) in args_dict.items())
-    res = [instamenu_command, "-p", str(prompt) , "-w", str(width)]
+    res = [instamenu_command, "-p", str(prompt)]
     res.extend(instamenu_args)
     res += list(itertools.chain.from_iterable(extras))
     res[1:1] = lines.split()
@@ -139,7 +136,7 @@ def choose_adapter(client):
     elif len(devices) == 1:
         return devices[0]
     device_names = "\n".join([d.get_iface() for d in devices]).encode(ENC)
-    sel = Popen(instamenu_cmd(len(devices), 700, "CHOOSE ADAPTER:"),
+    sel = Popen(instamenu_cmd(len(devices), "CHOOSE ADAPTER:"),
                 stdin=PIPE,
                 stdout=PIPE,
                 env=ENV).communicate(input=device_names)[0].decode(ENC)
@@ -292,6 +289,34 @@ class Action():  # pylint: disable=too-few-public-methods
             self.func(*self.args)
 
 
+def conn_matches_adapter(conn, adapter):
+    """Return True if the connection is applicable for the given adapter.
+
+    There seem to be two ways for a connection specify what interface it belongs
+    to:
+
+    - By setting 'mac-address' in [wifi] to the adapter's MAC
+    - By setting 'interface-name` in [connection] to the adapter's name.
+
+    Depending on how the connection was added, it seems like either
+    'mac-address', 'interface-name' or neither of both is set.
+    """
+    # [wifi] mac-address
+    setting_wireless = conn.get_setting_wireless()
+    mac = setting_wireless.get_mac_address()
+    if mac is not None:
+        return mac == adapter.get_permanent_hw_address()
+
+    # [connection] interface-name
+    setting_connection = conn.get_setting_connection()
+    interface = setting_connection.get_interface_name()
+    if interface is not None:
+        return interface == adapter.get_iface()
+
+    # Neither is set, let's assume this connection is for multiple/all adapters.
+    return True
+
+
 def process_ap(nm_ap, is_active, adapter):
     """Activate/Deactivate a connection and get password if required"""
     if is_active:
@@ -299,8 +324,7 @@ def process_ap(nm_ap, is_active, adapter):
     else:
         conns_cur = [i for i in CONNS if
                      i.get_setting_wireless() is not None and
-                     i.get_setting_wireless().get_mac_address() ==
-                     adapter.get_permanent_hw_address()]
+                     conn_matches_adapter(i, adapter)]
         con = nm_ap.filter_connections(conns_cur)
         if len(con) > 1:
             raise ValueError("There are multiple connections possible")
@@ -515,7 +539,7 @@ def get_selection(all_actions):
                     if action.is_active]
 
     inp_bytes = "\n".join(inp).encode(ENC)
-    command = instamenu_cmd(len(inp), 700, active_lines=active_lines)
+    command = instamenu_cmd(len(inp), active_lines=active_lines)
     sel = Popen(command, stdin=PIPE, stdout=PIPE,
                 env=ENV).communicate(input=inp_bytes)[0].decode(ENC)
 
@@ -649,7 +673,7 @@ def get_passphrase():
             if res.startswith("D "):
                 pin = res.split("D ")[1]
         return pin
-    return Popen(instamenu_cmd(0, 700, "Passphrase"),
+    return Popen(instamenu_cmd(0, "Passphrase"),
                  stdin=PIPE, stdout=PIPE).communicate()[0].decode(ENC)
 
 
@@ -659,7 +683,7 @@ def delete_connection():
     """
     conn_acts = [Action(i.get_id(), i.delete_async, args=[None, delete_cb, None]) for i in CONNS]
     conn_names = "\n".join([str(i) for i in conn_acts]).encode(ENC)
-    sel = Popen(instamenu_cmd(len(conn_acts), 700, "CHOOSE CONNECTION TO DELETE:"),
+    sel = Popen(instamenu_cmd(len(conn_acts), "CHOOSE CONNECTION TO DELETE:"),
                 stdin=PIPE,
                 stdout=PIPE,
                 env=ENV).communicate(input=conn_names)[0].decode(ENC)
@@ -790,8 +814,7 @@ def create_ap_list(adapter, active_connections):
                      key=lambda a: a.get_strength(), reverse=True)
     conns_cur = [i for i in CONNS if
                  i.get_setting_wireless() is not None and
-                 i.get_setting_wireless().get_mac_address() ==
-                 adapter.get_permanent_hw_address()]
+                 conn_matches_adapter(i, adapter)]
     try:
         ap_conns = active_ap.filter_connections(conns_cur)
         active_ap_name = ssid_to_utf8(active_ap)

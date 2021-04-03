@@ -45,13 +45,40 @@ while [ -n "$LOOPSETTING" ]; do
         multimonitorlock -l -- --timestr="%H:%M"
         ;;
       *Shutdown)
-        systemctl poweroff
+        init_system="$(cat /proc/1/comm)"
+        if [[ $init_system = "systemd" ]]; then
+          systemctl poweroff
+        elif [[ $init_system = "init" ]]; then
+          loginctl poweroff
+        elif [[ $init_system = "runit" ]]; then
+          loginctl poweroff
+        else
+          systemctl poweroff
+        fi
         ;;
       *Restart)
-        systemctl reboot
+        init_system="$(cat /proc/1/comm)"
+        if [[ $init_system = "systemd" ]]; then
+          systemctl reboot
+        elif [[ $init_system = "init" ]]; then
+          loginctl reboot
+        elif [[ $init_system = "runit" ]]; then
+          loginctl reboot
+        else
+          systemctl reboot
+        fi
         ;;
       *Sleep)
-        systemctl suspend
+        init_system="$(cat /proc/1/comm)"
+        if [[ $init_system = "systemd" ]]; then
+          systemctl suspend
+        elif [[ $init_system = "init" ]]; then
+          loginctl suspend
+        elif [[ $init_system = "runit" ]]; then
+          loginctl suspend
+        else
+          systemctl suspend
+        fi
         ;;
       *)
       	echo "Program terminated." && exit 1

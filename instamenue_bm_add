@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# path:       /usr/bin/instamenue_bm_add
+# author:     The-Repo-Club [wayne6324@gmail.com]
+# github:     https://github.com/The-Repo-Club/instamenu-extra
+# date:       2021-03-10 12:34:47.440579
+
+result() {
+  echo -n | instamenu -p "${1:-Add a bookmark:...}"
+}
+
+url="$(result "URL:")"
+
+if [ -z "$url" ]; then
+  exit
+fi
+
+title="$(result "Title:")"
+tags="$(result "Tags (comma delimited):")"
+
+bm -w "$HOME/.config/instamenu/bookmarks/" -a $url -T "$title" -t "$tags"

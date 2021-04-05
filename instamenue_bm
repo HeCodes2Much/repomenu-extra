@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# path:       /usr/bin/instamenue_bm
+# author:     The-Repo-Club [wayne6324@gmail.com]
+# github:     https://github.com/The-Repo-Club/instamenu-extra
+# date:       2021-03-10 12:34:47.440579
+
+declare -A g bmarray;
+
+while IFS=\| read -r guid date id url title tags;
+do
+  bookmark="$title "-" "$url" "-" "$tags"";
+  bmarray["$bookmark"]="$url";
+done < "$HOME/.config/instamenu/bookmarks/bm.lnk"
+
+function load() {
+  printf "Add\nRemove\n"
+  while IFS=\| read -r guid date id url title tags;
+  do
+    bookmark="$title "-" "$url" "-" "$tags"";
+    printf "$bookmark\n";
+  done < "$HOME/.config/instamenu/bookmarks/bm.lnk"
+
+}
+
+choice=$(load | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Add/Open bookmark:...}" -H -x 10000 -wm)
+
+LOOPSETTING="true"
+while [ -n "$LOOPSETTING" ]; do
+  [ -n "$choice" ] || exit
+  unset LOOPSETTING
+  case "$choice" in
+    Add) instamenue_bm_add ;;
+    Remove) instamenue_bm_remove ;;
+    *) bm -w "$HOME/.config/instamenu/bookmarks/" -o ${bmarray[$choice]};;
+  esac
+done

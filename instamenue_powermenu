@@ -32,6 +32,19 @@ asksetting() {
 $options" | instamenu -wm -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
 }
 
+triggerFunction() {
+  init_system="$(cat /proc/1/comm)"
+  if [[ $init_system = "systemd" ]]; then
+    systemctl $1
+  elif [[ $init_system = "init" ]]; then
+    loginctl $1
+  elif [[ $init_system = "runit" ]]; then
+    loginctl $1
+  else
+    systemctl $1
+  fi
+}
+
 LOOPSETTING="true"
 while [ -n "$LOOPSETTING" ]; do
     CHOICE="$(asksetting)"
@@ -45,40 +58,13 @@ while [ -n "$LOOPSETTING" ]; do
         multimonitorlock -l -- --timestr="%H:%M"
         ;;
       *Shutdown)
-        init_system="$(cat /proc/1/comm)"
-        if [[ $init_system = "systemd" ]]; then
-          systemctl poweroff
-        elif [[ $init_system = "init" ]]; then
-          loginctl poweroff
-        elif [[ $init_system = "runit" ]]; then
-          loginctl poweroff
-        else
-          systemctl poweroff
-        fi
+        triggerFunction poweroff
         ;;
       *Restart)
-        init_system="$(cat /proc/1/comm)"
-        if [[ $init_system = "systemd" ]]; then
-          systemctl reboot
-        elif [[ $init_system = "init" ]]; then
-          loginctl reboot
-        elif [[ $init_system = "runit" ]]; then
-          loginctl reboot
-        else
-          systemctl reboot
-        fi
+        triggerFunction reboot
         ;;
       *Sleep)
-        init_system="$(cat /proc/1/comm)"
-        if [[ $init_system = "systemd" ]]; then
-          systemctl suspend
-        elif [[ $init_system = "init" ]]; then
-          loginctl suspend
-        elif [[ $init_system = "runit" ]]; then
-          loginctl suspend
-        else
-          systemctl suspend
-        fi
+        triggerFunction suspend
         ;;
       *)
       	echo "Program terminated." && exit 1

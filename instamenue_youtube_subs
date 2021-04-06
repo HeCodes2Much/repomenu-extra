@@ -21,7 +21,7 @@ instantmenu() {
 : "${SUBS_MENU_PROG:=instantmenu}"
 : "${SUBS:=${HOME}/.cache/subs}"
 : "${SUBS_LINKS:=$SUBS/links}"
-: "${SUBS_OPEN:=firefox}"
+: "${SUBS_OPEN:=$(gsettings get org.cynicalteam.instamenu.preferences webbrowser | sed s/\'//g)}"
 : "${SUBS_CACHE:=$SUBS/cache}"
 : "${SUBS_SLEEP_VALUE:=0.05}" # raise this if you experience problems
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

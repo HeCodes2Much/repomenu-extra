@@ -1,4 +1,4 @@
-# instamenu - menu from CynicalTeam
+# instamenu - menu from therepoclub
 # See LICENSE file for copyright and license details.
 
 include config.mk

@@ -6,13 +6,13 @@
 # date:       2021-01-03 12:34:47.440579
 
 getsettings() {
-    TERMINAL=$(gsettings get org.cynicalteam.instamenu.preferences terminal | sed s/\'//g)
-    WEBBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences webbrowser | sed s/\'//g)
-    FILEMANAGER=$(gsettings get org.cynicalteam.instamenu.preferences filemanager | sed s/\'//g)
-    MAILREADER=$(gsettings get org.cynicalteam.instamenu.preferences mailreader | sed s/\'//g)
-    TEXTEDITOR=$(gsettings get org.cynicalteam.instamenu.preferences texteditor | sed s/\'//g)
-    HYPERVISOR=$(gsettings get org.cynicalteam.instamenu.preferences hypervisor | sed s/\'//g)
-    GITBROWSER=$(gsettings get org.cynicalteam.instamenu.preferences gitbrowser | sed s/\'//g)
+    TERMINAL=$(gsettings get org.therepoclub.instamenu.preferences terminal | sed s/\'//g)
+    WEBBROWSER=$(gsettings get org.therepoclub.instamenu.preferences webbrowser | sed s/\'//g)
+    FILEMANAGER=$(gsettings get org.therepoclub.instamenu.preferences filemanager | sed s/\'//g)
+    MAILREADER=$(gsettings get org.therepoclub.instamenu.preferences mailreader | sed s/\'//g)
+    TEXTEDITOR=$(gsettings get org.therepoclub.instamenu.preferences texteditor | sed s/\'//g)
+    HYPERVISOR=$(gsettings get org.therepoclub.instamenu.preferences hypervisor | sed s/\'//g)
+    GITBROWSER=$(gsettings get org.therepoclub.instamenu.preferences gitbrowser | sed s/\'//g)
 }
 
 selectterminal() {
@@ -69,7 +69,7 @@ selectdefault() {
             CUSTOMAPP="$(imenu -i "Set custom $1")"
             [ -z "$CUSTOMAPP" ] && echo "Program terminated." && exit
             if imenu -c "Would you like to set $1 to $CUSTOMAPP?"; then
-                gsettings set org.cynicalteam.instamenu.preferences $1 $CUSTOMAPP
+                gsettings set org.therepoclub.instamenu.preferences $1 $CUSTOMAPP
                 notify-send "instamenue_settings" "$1 changed from $2 to $CUSTOMAPP" && asksetting
             else
                 defaultapplicationsettings

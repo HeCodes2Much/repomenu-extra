@@ -17,37 +17,37 @@ getsettings() {
 
 selectterminal() {
     getsettings
-    selectdefault terminal "$TERMINAL" 
+    selectdefault terminal "$TERMINAL"
 }
 
 selectwebbrowser() {
     getsettings
-    selectdefault webbrowser "$WEBBROWSER" 
+    selectdefault webbrowser "$WEBBROWSER"
 }
 
 selectfilemanager() {
     getsettings
-    selectdefault filemanager "$FILEMANAGER" 
+    selectdefault filemanager "$FILEMANAGER"
 }
 
 selectmailreader() {
     getsettings
-    selectdefault mailreader "$MAILREADER" 
+    selectdefault mailreader "$MAILREADER"
 }
 
 selecttexteditor() {
     getsettings
-    selectdefault texteditor "$TEXTEDITOR" 
+    selectdefault texteditor "$TEXTEDITOR"
 }
 
 selecthypervisor() {
     getsettings
-    selectdefault hypervisor "$HYPERVISOR" 
+    selectdefault hypervisor "$HYPERVISOR"
 }
 
 selectgitbrowser() {
     getsettings
-    selectdefault gitbrowser "$GITBROWSER" 
+    selectdefault gitbrowser "$GITBROWSER"
 }
 
 selectdefaultoptions() {

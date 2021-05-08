@@ -25,7 +25,7 @@ choicemenu() {
 :b Update
 :r Close Pacman"
 
-    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Settings...}" -H -x 10000
+    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Settings...}" -x 10000
 }
 
 LOOPSETTING="true"
@@ -46,7 +46,7 @@ while [ -n "$LOOPSETTING" ]; do
         $TERMINAL -e bash -c "(sudo pacman -R $PACKAGE) && notify-send 'instamenue_pacman' 'finished uninstalling '$PACKAGE"
         ;;
     *Browse)
-        octopi &
+        /usr/bin/octopi &
         echo "Program terminated." && exit
         ;;
     *package)

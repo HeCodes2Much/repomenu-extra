@@ -13,6 +13,13 @@ getsettings() {
     TEXTEDITOR=$(gsettings get org.therepoclub.instamenu.preferences texteditor | sed s/\'//g)
     HYPERVISOR=$(gsettings get org.therepoclub.instamenu.preferences hypervisor | sed s/\'//g)
     GITBROWSER=$(gsettings get org.therepoclub.instamenu.preferences gitbrowser | sed s/\'//g)
+
+    CLIPMENU=$(gsettings get org.therepoclub.instawm.preferences clipmenucmd | sed s/\'//g)
+    INSTASETTINGS=$(gsettings get org.therepoclub.instawm.preferences instasettingscmd | sed s/\'//g)
+    POWERMENU=$(gsettings get org.therepoclub.instawm.preferences powermenucmd | sed s/\'//g)
+    SMARTMENU=$(gsettings get org.therepoclub.instawm.preferences smartmenucmd | sed s/\'//g)
+    STARTMENU=$(gsettings get org.therepoclub.instawm.preferences startmenucmd | sed s/\'//g)
+    SYSTEMMONITOR=$(gsettings get org.therepoclub.instawm.preferences systemmonitorcmd | sed s/\'//g)
 }
 
 selectterminal() {
@@ -50,13 +57,43 @@ selectgitbrowser() {
     selectdefault gitbrowser "$GITBROWSER"
 }
 
+selectclipmenucmd() {
+    getsettings
+    selectwmdefault clipmenucmd "$CLIPMENU"
+}
+
+selectinstasettingscmd() {
+    getsettings
+    selectwmdefault instasettingscmd "$INSTASETTINGS"
+}
+
+selectpowermenucmd() {
+    getsettings
+    selectwmdefault powermenucmd "$POWERMENU"
+}
+
+selectsmartmenucmd() {
+    getsettings
+    selectwmdefault smartmenucmd "$SMARTMENU"
+}
+
+selectstartmenucmd() {
+    getsettings
+    selectwmdefault startmenucmd "$STARTMENU"
+}
+
+selectsystemmonitorcmd() {
+    getsettings
+    selectwmdefault systemmonitorcmd "$SYSTEMMONITOR"
+}
+
 selectdefaultoptions() {
-    options=">>h Default (${2:-$1})
+    options=">>h Default (${@:2})
 :b Custom
 :y Back
 :r Close Settings"
 
-    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
+    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000 -wm
 }
 
 selectdefault() {
@@ -87,23 +124,63 @@ selectdefault() {
     done
 }
 
+selectwmdefault() {
+    LOOPSETTING="true"
+    while [ -n "$LOOPSETTING" ]; do
+        CHOICE="$(selectdefaultoptions $@)"
+        [ -n "$CHOICE" ] || exit
+        case "$CHOICE" in
+        *Custom)
+            CUSTOMAPP="$(imenu -i "Set custom $1")"
+            [ -z "$CUSTOMAPP" ] && echo "Program terminated." && exit
+            if imenu -c "Would you like to set $1 to $CUSTOMAPP?"; then
+                gsettings set org.therepoclub.instawm.preferences $1 $CUSTOMAPP
+                notify-send "instamenue_settings" "$1 changed from $2 to $CUSTOMAPP" && asksetting
+            else
+                defaultapplicationsettings
+                echo "Program terminated." && exit
+            fi
+            ;;
+        *Back)
+            defaultapplicationsettings
+            echo "Program terminated." && exit
+            ;;
+        *)
+            echo "Program terminated." && exit
+            ;;
+        esac
+    done
+}
+
 # graphical settings for instamenu
 [ -r ./instamenu/utils/functions.sh ] && source ./instamenu/utils/functions.sh
 
 defaultapplicationsettingsoptions() {
     getsettings
-    options=">>h Default applications
+    if command -v instawm &> /dev/null; then
+        wm="\n>>h Window Manager defaults
+:g ClipMenu
+:g WMSettings
+:g PowerMenu
+:g SmartMenu
+:g StartMenu
+:g SystemMonitor"
+    fi
+
+    apps=">>h Default applications
 :b Terminal Emulator
 :b Web Browser
 :b File Manager
 :b Mail Reader
 :b Text Editor
 :b Hypervisor
-:b Git Client
+:b Git Client"
+
+    options="\n>>h Options
 :y Back
 :r Close Settings"
 
-    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
+    echo -e "$apps$wm$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 
 }
 
@@ -134,6 +211,24 @@ defaultapplicationsettings() {
         *Client)
             selectgitbrowser
             ;;
+        *ClipMenu)
+            selectclipmenucmd
+            ;;
+        *WMSettings)
+            selectinstasettingscmd
+            ;;
+        *PowerMenu)
+            selectpowermenucmd
+            ;;
+        *SmartMenu)
+            selectsmartmenucmd
+            ;;
+        *StartMenu)
+            selectstartmenucmd
+            ;;
+        *SystemMonitor)
+            selectsystemmonitorcmd
+            ;;
         *Back)
             asksetting
             echo "Program terminated." && exit
@@ -151,7 +246,7 @@ soundsettingsoptions() {
 :y Back
 :r Close Settings"
 
-    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
+    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 soundsettings() {
@@ -182,7 +277,7 @@ appearancesettingsoptions() {
 :y Back
 :r Close Settings"
 
-    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
+    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 appearancesettings() {
@@ -218,7 +313,7 @@ displaysettingsoptions() {
 :y Back
 :r Close Settings"
 
-    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
+    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 displaysettings() {
@@ -258,7 +353,7 @@ asksettingoptions() {
 :b Default Applications
 :r Close Settings"
 
-    echo "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -H -x 10000
+    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 asksetting() {

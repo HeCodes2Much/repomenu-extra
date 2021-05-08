@@ -28,7 +28,7 @@ asksetting() {
 :r Restart
 :r 襤Shutdown"
 
-    echo ">>h Uptime: $(getuptime)
+    echo -e ">>h Uptime: $(getuptime)
 $options" | instamenu -wm -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
 }
 

@@ -52,10 +52,10 @@ while [ -n "$LOOPSETTING" ]; do
     *package)
         PACKAGE="$(imenu -i 'enter package name')"
         [ -n "$PACKAGE" ] || echo "Program terminated." && exit
-        $TERMINAL -e bash -c "(paru -S $PACKAGE) && notify-send 'instamenue_pacman' 'finished installing '$PACKAGE"
+        $TERMINAL -e bash -c "(instaaur -g $PACKAGE) && notify-send 'instamenue_pacman' 'finished installing '$PACKAGE"
         ;;
     *Update)
-        $TERMINAL -e bash -c "(paru -Syyu) && notify-send 'instamenue_pacman' 'finished updating'"
+        $TERMINAL -e bash -c "(pacman -Syyu) && notify-send 'instamenue_pacman' 'finished updating'"
         ;;
     *Pacman)
         instamenue_settings &

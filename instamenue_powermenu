@@ -4,18 +4,18 @@ getuptime() {
     uptime -p >/dev/null 2>&1
 
     if [ "$?" -eq 0 ]; then
-      # Supports most Linux distro
-      # when the machine is up for less than '0' minutes then
-      # 'uptime -p' returns ONLY 'up', so we need to set a default value
-      UP_SET_OR_EMPTY=$(uptime -p | awk -F 'up ' '{print $2}')
-      UP=${UP_SET_OR_EMPTY:-'less than a minute'}
+        # Supports most Linux distro
+        # when the machine is up for less than '0' minutes then
+        # 'uptime -p' returns ONLY 'up', so we need to set a default value
+        UP_SET_OR_EMPTY=$(uptime -p | awk -F 'up ' '{print $2}')
+        UP=${UP_SET_OR_EMPTY:-'less than a minute'}
     else
-      # Supports Mac OS X, Debian 7, etc
-      UP=$(uptime | sed -E 's/^[^,]*up *//; s/mins/minutes/; s/hrs?/hours/;
-      s/([[:digit:]]+):0?([[:digit:]]+)/\1 hours, \2 minutes/;
-      s/^1 hours/1 hour/; s/ 1 hours/ 1 hour/;
-      s/min,/minutes,/; s/ 0 minutes,/ less than a minute,/; s/ 1 minutes/ 1 minute/;
-      s/  / /; s/, *[[:digit:]]* users?.*//')
+        # Supports Mac OS X, Debian 7, etc
+        UP=$(uptime | sed -E 's/^[^,]*up *//; s/mins/minutes/; s/hrs?/hours/;
+        s/([[:digit:]]+):0?([[:digit:]]+)/\1 hours, \2 minutes/;
+        s/^1 hours/1 hour/; s/ 1 hours/ 1 hour/;
+        s/min,/minutes,/; s/ 0 minutes,/ less than a minute,/; s/ 1 minutes/ 1 minute/;
+        s/  / /; s/, *[[:digit:]]* users?.*//')
     fi
 
     echo "$UP"
@@ -23,26 +23,26 @@ getuptime() {
 
 asksetting() {
     options=":g Lock
-:y 望Sleep
-:b Logout
-:r Restart
-:r 襤Shutdown"
+    :y 望Sleep
+    :b Logout
+    :r Restart
+    :r 襤Shutdown"
 
     echo -e ">>h Uptime: $(getuptime)
-$options" | instamenu -wm -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
+    $options" | instamenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
 }
 
 triggerFunction() {
-  init_system="$(cat /proc/1/comm)"
-  if [[ $init_system = "systemd" ]]; then
-    systemctl $1
-  elif [[ $init_system = "init" ]]; then
-    loginctl $1
-  elif [[ $init_system = "runit" ]]; then
-    loginctl $1
-  else
-    systemctl $1
-  fi
+    init_system="$(cat /proc/1/comm)"
+    if [[ $init_system = "systemd" ]]; then
+        systemctl $1
+    elif [[ $init_system = "init" ]]; then
+        loginctl $1
+    elif [[ $init_system = "runit" ]]; then
+        loginctl $1
+    else
+        systemctl $1
+    fi
 }
 
 LOOPSETTING="true"
@@ -51,23 +51,23 @@ while [ -n "$LOOPSETTING" ]; do
     [ -n "$CHOICE" ] || exit
     unset LOOPSETTING
     case "$CHOICE" in
-      *Logout)
-        pkill $DESKTOP_SESSION
-        ;;
-      *Lock)
-        multimonitorlock -l -- --timestr="%H:%M"
-        ;;
-      *Shutdown)
-        triggerFunction poweroff
-        ;;
-      *Restart)
-        triggerFunction reboot
-        ;;
-      *Sleep)
-        triggerFunction suspend
-        ;;
-      *)
-      	echo "Program terminated." && exit 1
-      	;;
+        *Logout)
+            pkill $DESKTOP_SESSION
+            ;;
+        *Lock)
+            multimonitorlock -l -- --timestr="%H:%M"
+            ;;
+        *Shutdown)
+            triggerFunction poweroff
+            ;;
+        *Restart)
+            triggerFunction reboot
+            ;;
+        *Sleep)
+            triggerFunction suspend
+            ;;
+        *)
+            echo "Program terminated." && exit 1
+            ;;
     esac
 done

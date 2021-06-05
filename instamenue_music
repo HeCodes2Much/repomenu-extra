@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# path:       /usr/bin/instamenue_smartrun
+# author:     The-Repo-Club [wayne6324@gmail.com]
+# github:     https://github.com/The-Repo-Club/instamenu-extra
+# date:       2021-01-03 12:34:47.440579
+
+asksetting() {
+    playlist=$@
+    if [[ -z ${playlist} ]];
+    then
+        options=$(ls $HOME/Music | grep '/*.ogg\|/*.mp3')
+    else
+        options=$(ls $@ | grep '/*.ogg\|/*.mp3')
+    fi
+    echo -e ">>h Select a song to play.
+$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -x 10000
+}
+
+LOOPSETTING="true"
+while [ -n "$LOOPSETTING" ]; do
+    CHOICE="$(asksetting $1)"
+    [ -n "$CHOICE" ] || exit
+    unset LOOPSETTING
+    case $CHOICE in
+    *.ogg)
+        ffplay -nodisp $CHOICE &
+        ;;
+    *.mp3)
+        ffplay -nodisp $CHOICE &
+        ;;
+    *)
+        echo "Program terminated." && exit
+        ;;
+    esac
+done
+

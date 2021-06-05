@@ -93,7 +93,7 @@ selectdefaultoptions() {
 :y Back
 :r Close Settings"
 
-    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000 -wm
+    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 selectdefault() {

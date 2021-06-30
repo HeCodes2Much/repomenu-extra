@@ -23,13 +23,13 @@ getuptime() {
 
 asksetting() {
     options=":g Lock
-    :y 望Sleep
-    :b Logout
-    :r Restart
-    :r 襤Shutdown"
+:y 望Sleep
+:b Logout
+:r Restart
+:r 襤Shutdown"
 
     echo -e ">>h Uptime: $(getuptime)
-    $options" | instamenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
+$options" | instamenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
 }
 
 triggerFunction() {

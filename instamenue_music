@@ -11,10 +11,11 @@ asksetting() {
     then
         options=$(ls $HOME/Music | grep '/*.ogg\|/*.mp3')
     else
-        options=$(ls $@ | grep '/*.ogg\|/*.mp3')
+        options=$(ls $playlist | grep '/*.ogg\|/*.mp3')
     fi
     echo -e ">>h Select a song to play.
-$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -x 10000
+$options
+:b ⏼ Close music player" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -x 10000
 }
 
 LOOPSETTING="true"
@@ -24,10 +25,27 @@ while [ -n "$LOOPSETTING" ]; do
     unset LOOPSETTING
     case $CHOICE in
     *.ogg)
-        ffplay -nodisp $CHOICE &
+        playlist=$@
+        if [[ -z ${playlist} ]];
+        then
+            folder=$HOME/Music
+        else
+            folder=$playlist
+        fi
+        ffplay -nodisp "$folder/$CHOICE" &
         ;;
     *.mp3)
-        ffplay -nodisp $CHOICE &
+        playlist=$@
+        if [[ -z ${playlist} ]];
+        then
+            folder=$HOME/Music
+        else
+            folder=$playlist
+        fi
+        ffplay -nodisp "$folder/$CHOICE" &
+        ;;
+    *Close*)
+        pkill ffplay &
         ;;
     *)
         echo "Program terminated." && exit

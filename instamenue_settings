@@ -152,8 +152,6 @@ selectwmdefault() {
     done
 }
 
-# graphical settings for instamenu
-[ -r ./instamenu/utils/functions.sh ] && source ./instamenu/utils/functions.sh
 
 defaultapplicationsettingsoptions() {
     getsettings

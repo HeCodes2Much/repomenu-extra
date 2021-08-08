@@ -15,12 +15,25 @@ getsettings() {
     GITBROWSER=$(gsettings get org.therepoclub.instamenu.preferences gitbrowser | sed s/\'//g)
 }
 
+cleanup () {
+    cleanPackages=()
+    for p in $(pacman -Qtdq); do
+        cleanPackages+="$p"
+    done
+    if [[ ! -z "$cleanPackages" ]]; then
+        $TERMINAL -e bash -c "(sudo pacman -Rns $cleanPackages) && notify-send 'instamenue_pacman' 'finished installing '$PACKAGE"
+    else
+        $TERMINAL -e bash -c "notify-send 'Notice' 'No unused dependencies found!'"
+    fi
+}
+
 # simple pacman GUI for instantOS
 getsettings
 choicemenu() {
     options=":g Install
 :b 蓮Browse
 :r Remove
+:y Cleanup
 :b Install AUR package
 :b Update
 :r Close Pacman"
@@ -36,26 +49,37 @@ while [ -n "$LOOPSETTING" ]; do
     case "$CHOICE" in
     *Install)
         PACKAGE="$(imenu -i 'enter package name')"
-        [ -n "$PACKAGE" ] || echo "Program terminated." && exit
+        if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
         echo "installing $PACKAGE"
         $TERMINAL -e bash -c "(sudo pacman -S $PACKAGE) && notify-send 'instamenue_pacman' 'finished installing '$PACKAGE"
         ;;
     *Remove)
         PACKAGE="$(imenu -i 'enter package name')"
-        [ -n "$PACKAGE" ] || echo "Program terminated." && exit
+        if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
         $TERMINAL -e bash -c "(sudo pacman -R $PACKAGE) && notify-send 'instamenue_pacman' 'finished uninstalling '$PACKAGE"
         ;;
     *Browse)
-        /usr/bin/octopi &
+        if pacman -Qs "octopi" > /dev/null ; then
+            octopi &
+        elif pacman -Qs "pamac" > /dev/null ; then
+            pamac &
+        elif pacman -Qs "pkgbrowser" > /dev/null ; then
+            pkgbrowser &
+        else
+            $WEBBROWSER "https://archlinux.org/packages/"
+        fi
         echo "Program terminated." && exit
         ;;
-    *package)
+    *Cleanup)
+        cleanup
+        ;;
+    *AUR*)
         PACKAGE="$(imenu -i 'enter package name')"
-        [ -n "$PACKAGE" ] || echo "Program terminated." && exit
+        if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
         $TERMINAL -e bash -c "(instaaur -g $PACKAGE) && notify-send 'instamenue_pacman' 'finished installing '$PACKAGE"
         ;;
     *Update)
-        $TERMINAL -e bash -c "(pacman -Syyu) && notify-send 'instamenue_pacman' 'finished updating'"
+        $TERMINAL -e bash -c "(sudo pacman -Syyu) && notify-send 'instamenue_pacman' 'finished updating'"
         ;;
     *Pacman)
         instamenue_settings &

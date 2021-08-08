@@ -17,13 +17,13 @@ getConnections() {
 getConnectionsOther() {
     connected=$(getConnections | cut -b 9- | sed s/Repeater//g | awk {'printf ("Connect|%s|%s|%s|%s\n", $1, $8, $9, $2)'} | column -t -s '|' | sort -k4,4 -u)
     [[ -z $connected ]] && exit
-    printf "%s" "$connected\n\n"
+    printf "%s" "$connected"
 }
 
 getConnected() {
-    connected=$(getConnections | grep "*" | cut -b 9- | sed s/Repeater//g | awk {'printf ("%s|%s|%s|%s|[Connected]\n", $1, $8, $9, $2)'} | column -t -s '|' | sort -k4,4 -u)
+    connected=$(getConnections | grep "*" | cut -b 9- | sed s/Repeater//g | awk {'printf ("[Connected]|%s|%s|%s|%s|\n", $1, $8, $9, $2)'} | column -t -s '|' | sort -k4,4 -u)
     [[ -z $connected ]] && exit
-    printf "%s" "$connected\n\n"
+    printf "%s" "$connected"
 }
 
 checkLanEnabled() {
@@ -97,7 +97,7 @@ deleteSavedNetworks(){
 
 deleteNetworkMenu(){
     list=$(nmcli -t connection)
-    connection=$(printf "%s\n" "$list" | column -t -s ':' | instamenu -c -ps 1 -l 20 -w -600 -i -h -1 -p "Delete a connection" | awk -F"  " {'printf ("%s", $2)'})
+    connection=$(echo -e ">>r Delete a connection\n$list" | column -t -s ':' | instamenu -c -ps 1 -l 20 -w -600 -i -h -1 -q "Delete a connection" | awk -F"  " {'printf ("%s", $2)'})
     [[ -z $connection ]] && exit
     nmcli connection delete "$connection"
 }
@@ -108,12 +108,24 @@ checkSavedNetworks(){
 
 savedNetworkMenu(){
     list=$(nmcli -t connection)
-    connection=$(printf "%s\n" "$list" | column -t -s ':' | instamenu -c -ps 1 -l 20 -w -600 -i -h -1 -p "Saved Connections" | awk -F"  " {'printf ("%s", $1)'})
+    connection=$(echo -e ">>g Saved Connections\n$list" | column -t -s ':' | instamenu -c -ps 1 -l 20 -w -600 -i -h -1 -q "Saved Connections" | awk -F"  " {'printf ("%s", $1)'})
     [[ -z $connection ]] && exit
     nmcli connection up "$connection"
 }
 
-network=$(echo -e "$(getConnected)$(getConnectionsOther)$(checkLanEnabled)\n$(checkWifiEnabled)\n$(checkNetworkEnabled)\n$(connectionManager)\n$(rescanNetworks)\n\n$(deleteSavedNetworks)\n$(checkSavedNetworks)" | instamenu -c -ps 1 -l 20 -w -600 -i -h -1 -p "Networks")
+network=$(echo -e ">>g Conncted Networks
+$(getConnected)
+>>r Other Networks
+$(getConnectionsOther)
+>>b Network Settings
+$(checkLanEnabled)
+$(checkWifiEnabled)
+$(checkNetworkEnabled)
+$(connectionManager)
+$(rescanNetworks)
+>>p Connection Settings
+$(deleteSavedNetworks)
+$(checkSavedNetworks)" | instamenu -c -ps 1 -l 20 -w -600 -i -h -1 -q "Networks")
 
 case $network in
         Disable*)

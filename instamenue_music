@@ -15,7 +15,7 @@ asksetting() {
     fi
     echo -e ">>h Select a song to play.
 $options
-:b ⏼ Close music player" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -x 10000
+:r Close music player" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -x 10000
 }
 
 LOOPSETTING="true"

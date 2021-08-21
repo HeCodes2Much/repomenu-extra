@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 
-# path:       /usr/bin/instamenue_pacman
+# path:       /usr/bin/repomenue_pacman
 # author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/instamenu-extra
+# github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-01-03 12:34:47.440579
 
 getsettings() {
-    TERMINAL=$(gsettings get org.therepoclub.instamenu.preferences terminal | sed s/\'//g)
-    WEBBROWSER=$(gsettings get org.therepoclub.instamenu.preferences webbrowser | sed s/\'//g)
-    FILEMANAGER=$(gsettings get org.therepoclub.instamenu.preferences filemanager | sed s/\'//g)
-    MAILREADER=$(gsettings get org.therepoclub.instamenu.preferences mailreader | sed s/\'//g)
-    TEXTEDITOR=$(gsettings get org.therepoclub.instamenu.preferences texteditor | sed s/\'//g)
-    HYPERVISOR=$(gsettings get org.therepoclub.instamenu.preferences hypervisor | sed s/\'//g)
-    GITBROWSER=$(gsettings get org.therepoclub.instamenu.preferences gitbrowser | sed s/\'//g)
+    TERMINAL=$(gsettings get org.therepoclub.repomenu.preferences terminal | sed s/\'//g)
+    WEBBROWSER=$(gsettings get org.therepoclub.repomenu.preferences webbrowser | sed s/\'//g)
+    FILEMANAGER=$(gsettings get org.therepoclub.repomenu.preferences filemanager | sed s/\'//g)
+    MAILREADER=$(gsettings get org.therepoclub.repomenu.preferences mailreader | sed s/\'//g)
+    TEXTEDITOR=$(gsettings get org.therepoclub.repomenu.preferences texteditor | sed s/\'//g)
+    HYPERVISOR=$(gsettings get org.therepoclub.repomenu.preferences hypervisor | sed s/\'//g)
+    GITBROWSER=$(gsettings get org.therepoclub.repomenu.preferences gitbrowser | sed s/\'//g)
 }
 
 cleanup () {
@@ -21,7 +21,7 @@ cleanup () {
         cleanPackages+="$p"
     done
     if [[ ! -z "$cleanPackages" ]]; then
-        $TERMINAL -e bash -c "(sudo pacman -Rns $cleanPackages) && notify-send 'instamenue_pacman' 'finished installing '$PACKAGE"
+        $TERMINAL -e bash -c "(sudo pacman -Rns $cleanPackages) && notify-send 'repomenue_pacman' 'finished installing '$PACKAGE"
     else
         $TERMINAL -e bash -c "notify-send 'Notice' 'No unused dependencies found!'"
     fi
@@ -38,7 +38,7 @@ choicemenu() {
 :b Update
 :r Close Pacman"
 
-    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Settings...}" -x 10000
+    echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Settings...}" -x 10000
 }
 
 LOOPSETTING="true"
@@ -51,12 +51,12 @@ while [ -n "$LOOPSETTING" ]; do
         PACKAGE="$(imenu -i 'enter package name')"
         if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
         echo "installing $PACKAGE"
-        $TERMINAL -e bash -c "(sudo pacman -S $PACKAGE) && notify-send 'instamenue_pacman' 'finished installing '$PACKAGE"
+        $TERMINAL -e bash -c "(sudo pacman -S $PACKAGE) && notify-send 'repomenue_pacman' 'finished installing '$PACKAGE"
         ;;
     *Remove)
         PACKAGE="$(imenu -i 'enter package name')"
         if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
-        $TERMINAL -e bash -c "(sudo pacman -R $PACKAGE) && notify-send 'instamenue_pacman' 'finished uninstalling '$PACKAGE"
+        $TERMINAL -e bash -c "(sudo pacman -R $PACKAGE) && notify-send 'repomenue_pacman' 'finished uninstalling '$PACKAGE"
         ;;
     *Browse)
         if pacman -Qs "octopi" > /dev/null ; then
@@ -76,13 +76,13 @@ while [ -n "$LOOPSETTING" ]; do
     *AUR*)
         PACKAGE="$(imenu -i 'enter package name')"
         if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
-        $TERMINAL -e bash -c "(instaaur -g $PACKAGE) && notify-send 'instamenue_pacman' 'finished installing '$PACKAGE"
+        $TERMINAL -e bash -c "(instaaur -g $PACKAGE) && notify-send 'repomenue_pacman' 'finished installing '$PACKAGE"
         ;;
     *Update)
-        $TERMINAL -e bash -c "(sudo pacman -Syyu) && notify-send 'instamenue_pacman' 'finished updating'"
+        $TERMINAL -e bash -c "(sudo pacman -Syyu) && notify-send 'repomenue_pacman' 'finished updating'"
         ;;
     *Pacman)
-        instamenue_settings &
+        repomenue_settings &
         echo "Program terminated." && exit
         ;;
     esac

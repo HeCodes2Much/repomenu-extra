@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# path:       /usr/bin/instamenue_randr
+# path:       /usr/bin/repomenue_randr
 # author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/instamenu-extra
+# github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-01-03 12:34:47.440579
 
 set -e
@@ -38,7 +38,7 @@ function isOn {
   xrandr --listactivemonitors | grep $1 | wc -l
 }
 
-display=$(connectedDisplays | instamenu -c -l 10 -w -600 -i -h -1 -bw 4)
+display=$(connectedDisplays | repomenu -c -l 10 -w -600 -i -h -1 -bw 4)
 command="$command --output $display"
 
 another=false
@@ -54,12 +54,12 @@ if [ "$noOfActiveDisplays" -eq 2 ]; then
 fi
 
 # Select another display.
-# echo $another if it has value, othervise perform a instamenu prompt
+# echo $another if it has value, othervise perform a repomenu prompt
 function selectAnother {
   if [ "$another" ]; then
     echo "$another"
   else
-    connectedDisplays | grep -v "$display" | instamenu -c -l 10 -w -600 -i -h -1 -bw 4
+    connectedDisplays | grep -v "$display" | repomenu -c -l 10 -w -600 -i -h -1 -bw 4
   fi
 }
 
@@ -86,7 +86,7 @@ else
   options="turn on\n$options"
 fi
 
-opt=$(echo -e $options | instamenu -c -l 10 -w -600 -i -h -1 -bw 4)
+opt=$(echo -e $options | repomenu -c -l 10 -w -600 -i -h -1 -bw 4)
 
 case "$opt" in
   "cancel")
@@ -102,7 +102,7 @@ case "$opt" in
   "invert")
     command="$command --rotate inverted" ;;
   "set resolution")
-    resolution="$(resolutions $display | instamenu -c -l 10 -w -600 -i -h -1 -bw 4 | cut -d " " -f 4)"
+    resolution="$(resolutions $display | repomenu -c -l 10 -w -600 -i -h -1 -bw 4 | cut -d " " -f 4)"
     command="$command --mode $resolution" ;;
   "move right of"*)
     command="$command --right-of $(selectAnother)" ;;
@@ -116,6 +116,6 @@ case "$opt" in
     command="$command --same-as $(selectAnother)"  ;;
 esac
 
-if [ "$(echo -e "no\nyes" | instamenu -c -l 10 -w -600 -i -h -1 -bw 4 -q "run: $command")" == "yes" ]; then
+if [ "$(echo -e "no\nyes" | repomenu -c -l 10 -w -600 -i -h -1 -bw 4 -q "run: $command")" == "yes" ]; then
   echo "$command" | sh
 fi

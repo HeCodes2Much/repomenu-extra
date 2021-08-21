@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
 #
 # Watch your youtube subscriptions without a youtube account
-# via curl, instamenu, browser and basic unix commands.
+# via curl, repomenu, browser and basic unix commands.
 #
 # The $SUBS_FILE is a text file containing usernames or channel IDs
 # comments and blank lines are ignored.
 #
-# path:       /usr/bin/instamenue_mount
+# path:       /usr/bin/repomenue_mount
 # author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/instamenu-extra
+# github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-01-03 12:34:47.440579
 #
 
 instantmenu() {
-    instamenu -wm -c -w 750 -l 20 -p "Youtube Subs:"
+    repomenu -wm -c -w 750 -l 20 -p "Youtube Subs:"
 }
 
 # -/-/-/-/- Settings -/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
-: "${SUBS_FILE:=${HOME}/.config/instamenu/configs/subs.ini}"
+: "${SUBS_FILE:=${HOME}/.config/repomenu/configs/subs.ini}"
 : "${SUBS_MENU_PROG:=instantmenu}"
 : "${SUBS:=${HOME}/.cache/subs}"
 : "${SUBS_LINKS:=$SUBS/links}"
-: "${SUBS_OPEN:=$(gsettings get org.therepoclub.instamenu.preferences webbrowser | sed s/\'//g)}"
+: "${SUBS_OPEN:=$(gsettings get org.therepoclub.repomenu.preferences webbrowser | sed s/\'//g)}"
 : "${SUBS_CACHE:=$SUBS/cache}"
 : "${SUBS_SLEEP_VALUE:=0.05}" # raise this if you experience problems
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -34,7 +34,7 @@ die() {
 }
 
 usage() {
-    die 'Usage: instamenue_youtube_subs [-c cat_subs] [-g gen_links] [-u update_subs] [-d daemonize]'
+    die 'Usage: repomenue_youtube_subs [-c cat_subs] [-g gen_links] [-u update_subs] [-d daemonize]'
 }
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -220,12 +220,12 @@ daemonize() {
     # if changes occur, re-generate links automatically
     daemon_file=${HOME}/.cache/subs_daemon.cache
     if [ ! -f "$daemon_file" ] ; then
-        cp -f "${SUBS_FILE:=${HOME}/.config/instamenu/subs.ini}" "$daemon_file"
+        cp -f "${SUBS_FILE:=${HOME}/.config/repomenu/subs.ini}" "$daemon_file"
     fi
 
     while true ; do
-        if ! cmp "${SUBS_FILE:=${HOME}/.config/instamenu/subs.ini}" "$daemon_file" ; then
-            cp -f "${SUBS_FILE:=${HOME}/.config/instamenu/subs.ini}" "$daemon_file"
+        if ! cmp "${SUBS_FILE:=${HOME}/.config/repomenu/subs.ini}" "$daemon_file" ; then
+            cp -f "${SUBS_FILE:=${HOME}/.config/repomenu/subs.ini}" "$daemon_file"
         fi
         gen_links
         update_subs

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# path:       /usr/bin/instamenue_bm_add
+# path:       /usr/bin/repomenue_bm_add
 # author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/instamenu-extra
+# github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-03-10 12:34:47.440579
 
 declare -A g bmarray;
@@ -11,24 +11,24 @@ while IFS=\| read -r guid date id url title tags;
 do
   bookmark="$title "-" "$url" "-" "$tags"";
   bmarray["$bookmark"]="$url";
-done < "$HOME/.config/instamenu/bookmarks/bm.lnk"
+done < "$HOME/.config/repomenu/bookmarks/bm.lnk"
 
 function load() {
   while IFS=\| read -r guid date id url title tags;
   do
     bookmark="$title "-" "$url" "-" "$tags"";
     printf "$bookmark\n";
-  done < "$HOME/.config/instamenu/bookmarks/bm.lnk"
+  done < "$HOME/.config/repomenu/bookmarks/bm.lnk"
 
 }
 
-choice=$(load | instamenu -i -l -400 -p "${1:-Remove a bookmark:...}")
+choice=$(load | repomenu -i -l -400 -p "${1:-Remove a bookmark:...}")
 
 LOOPSETTING="true"
 while [ -n "$LOOPSETTING" ]; do
   [ -n "$choice" ] || exit
   unset LOOPSETTING
   case "$choice" in
-    *) bm -w "$HOME/.config/instamenu/bookmarks/" -d ${bmarray[$choice]} -D;;
+    *) bm -w "$HOME/.config/repomenu/bookmarks/" -d ${bmarray[$choice]} -D;;
   esac
 done

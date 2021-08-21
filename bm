@@ -2,7 +2,7 @@
 
 # path:       /usr/bin/bm
 # author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/instamenu-extra
+# github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-03-10 12:34:47.440579
 
 # default filename for Baker config file (just the filename no path)
@@ -870,7 +870,7 @@ config "${__c}"
 # If no bookmark file exist, create one if allowed
 if [ ! -f "${_BM_BOOKMARK_FILE}" -a "${_BM_CREATE_BOOKMARK_FILE,,}" = 'true' ]; then
     # Remember fields : 1=md5, 2=date, 2=accel, 3=url, 4=title, 5=tags
-    echo "eef521de8df447ad392dbace16cf2edc|$(date '+%FT%TZ')|:bm|https://github.com/The-Repo-Club/instamenu-extra/|Download link for instamenu-extra|default,shell,scripts" >> "${_BM_BOOKMARK_FILE}"
+    echo "eef521de8df447ad392dbace16cf2edc|$(date '+%FT%TZ')|:bm|https://github.com/The-Repo-Club/repomenu-extra/|Download link for repomenu-extra|default,shell,scripts" >> "${_BM_BOOKMARK_FILE}"
 fi
 
 # Starting to work with args. If none probably list...

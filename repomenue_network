@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # encoding:utf8
-# path:       /usr/bin/instamenue_network
+# path:       /usr/bin/repomenue_network
 # author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/instamenu-extra
+# github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-01-03 12:34:47.440579
 wifi_check=
 lan_check=
@@ -97,7 +97,7 @@ deleteSavedNetworks(){
 
 deleteNetworkMenu(){
     list=$(nmcli -t connection)
-    connection=$(echo -e ">>r Delete a connection\n$list" | column -t -s ':' | instamenu -c -ps 1 -l 20 -w -600 -i -h -1 -q "Delete a connection" | awk -F"  " {'printf ("%s", $2)'})
+    connection=$(echo -e ">>r Delete a connection\n$list" | column -t -s ':' | repomenu -c -ps 1 -l 20 -w -600 -i -h -1 -q "Delete a connection" | awk -F"  " {'printf ("%s", $2)'})
     [[ -z $connection ]] && exit
     nmcli connection delete "$connection"
 }
@@ -108,7 +108,7 @@ checkSavedNetworks(){
 
 savedNetworkMenu(){
     list=$(nmcli -t connection)
-    connection=$(echo -e ">>g Saved Connections\n$list" | column -t -s ':' | instamenu -c -ps 1 -l 20 -w -600 -i -h -1 -q "Saved Connections" | awk -F"  " {'printf ("%s", $1)'})
+    connection=$(echo -e ">>g Saved Connections\n$list" | column -t -s ':' | repomenu -c -ps 1 -l 20 -w -600 -i -h -1 -q "Saved Connections" | awk -F"  " {'printf ("%s", $1)'})
     [[ -z $connection ]] && exit
     nmcli connection up "$connection"
 }
@@ -125,7 +125,7 @@ $(connectionManager)
 $(rescanNetworks)
 >>p Connection Settings
 $(deleteSavedNetworks)
-$(checkSavedNetworks)" | instamenu -c -ps 1 -l 20 -w -600 -i -h -1 -q "Networks")
+$(checkSavedNetworks)" | repomenu -c -ps 1 -l 20 -w -600 -i -h -1 -q "Networks")
 
 case $network in
         Disable*)
@@ -151,7 +151,7 @@ case $network in
             shift
             ;;
         Rescan*)
-            instamenue_network
+            repomenue_network
             exit
             ;;
         Launch*)

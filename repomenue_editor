@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# path:       /usr/bin/repomenue_editor
+# author:     The-Repo-Club [wayne6324@gmail.com]
+# github:     https://github.com/The-Repo-Club/repomenu-extra
+# date:       2021-01-03 12:34:47.440579
+
+getsettings() {
+    TERMINAL=$(gsettings get org.therepoclub.repomenu.preferences terminal | sed s/\'//g)
+    WEBBROWSER=$(gsettings get org.therepoclub.repomenu.preferences webbrowser | sed s/\'//g)
+    FILEMANAGER=$(gsettings get org.therepoclub.repomenu.preferences filemanager | sed s/\'//g)
+    MAILREADER=$(gsettings get org.therepoclub.repomenu.preferences mailreader | sed s/\'//g)
+    TEXTEDITOR=$(gsettings get org.therepoclub.repomenu.preferences texteditor | sed s/\'//g)
+    HYPERVISOR=$(gsettings get org.therepoclub.repomenu.preferences hypervisor | sed s/\'//g)
+    GITBROWSER=$(gsettings get org.therepoclub.repomenu.preferences gitbrowser | sed s/\'//g)
+}
+
+asksetting() {
+    options=$(ls $HOME/.config/repomenu/scripts/)
+
+    echo ">>h Work on which script
+$options" | repomenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
+}
+
+LOOPSETTING="true"
+getsettings
+while [ -n "$LOOPSETTING" ]; do
+    FILE="$HOME/.config/repomenu/scripts/$(asksetting)"
+    unset LOOPSETTING
+    if [ -f "$FILE" ]; then
+        $TEXTEDITOR $FILE
+    else 
+        echo "Program terminated." && exit 1
+    fi
+done

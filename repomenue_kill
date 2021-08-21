@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 
-# path:       /usr/bin/instamenue_emoji
+# path:       /usr/bin/repomenue_emoji
 # author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/instamenu-extra
+# github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-03-10 12:34:47.440579
 
-# Running ps to get running processes and display in instamenu.
+# Running ps to get running processes and display in repomenu.
 selected="$(ps --user "$(id -u)" -F | \
-            instamenu -c -i -l 20 -p "Search for process to kill:" | \
+            repomenu -c -i -l 20 -p "Search for process to kill:" | \
             awk '{print $2" "$11}')";
 
 # Nested 'if' statements.  The outer 'if' statement is what to do
-# when we select one of the 'selected' options listed in instamenu.
+# when we select one of the 'selected' options listed in repomenu.
 if [[ -n $selected ]]; then
 
-    # Piping No/Yes into instamenu as a safety measure, in case you
+    # Piping No/Yes into repomenu as a safety measure, in case you
     # select a process that you don't actually want killed.
 
     if imenu -c "Kill $selected?"; then

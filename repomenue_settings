@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 
-# path:       /usr/bin/instamenue_settings
+# path:       /usr/bin/repomenue_settings
 # author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/instamenu-extra
+# github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-01-03 12:34:47.440579
 
 getsettings() {
-    TERMINAL=$(gsettings get org.therepoclub.instamenu.preferences terminal | sed s/\'//g)
-    WEBBROWSER=$(gsettings get org.therepoclub.instamenu.preferences webbrowser | sed s/\'//g)
-    FILEMANAGER=$(gsettings get org.therepoclub.instamenu.preferences filemanager | sed s/\'//g)
-    MAILREADER=$(gsettings get org.therepoclub.instamenu.preferences mailreader | sed s/\'//g)
-    TEXTEDITOR=$(gsettings get org.therepoclub.instamenu.preferences texteditor | sed s/\'//g)
-    HYPERVISOR=$(gsettings get org.therepoclub.instamenu.preferences hypervisor | sed s/\'//g)
-    GITBROWSER=$(gsettings get org.therepoclub.instamenu.preferences gitbrowser | sed s/\'//g)
+    TERMINAL=$(gsettings get org.therepoclub.repomenu.preferences terminal | sed s/\'//g)
+    WEBBROWSER=$(gsettings get org.therepoclub.repomenu.preferences webbrowser | sed s/\'//g)
+    FILEMANAGER=$(gsettings get org.therepoclub.repomenu.preferences filemanager | sed s/\'//g)
+    MAILREADER=$(gsettings get org.therepoclub.repomenu.preferences mailreader | sed s/\'//g)
+    TEXTEDITOR=$(gsettings get org.therepoclub.repomenu.preferences texteditor | sed s/\'//g)
+    HYPERVISOR=$(gsettings get org.therepoclub.repomenu.preferences hypervisor | sed s/\'//g)
+    GITBROWSER=$(gsettings get org.therepoclub.repomenu.preferences gitbrowser | sed s/\'//g)
 
     CLIPMENU=$(gsettings get org.therepoclub.instawm.preferences clipmenucmd | sed s/\'//g)
     INSTASETTINGS=$(gsettings get org.therepoclub.instawm.preferences instasettingscmd | sed s/\'//g)
@@ -93,7 +93,7 @@ selectdefaultoptions() {
 :y Back
 :r Close Settings"
 
-    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
+    echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 selectdefault() {
@@ -106,8 +106,8 @@ selectdefault() {
             CUSTOMAPP="$(imenu -i "Set custom $1")"
             [ -z "$CUSTOMAPP" ] && echo "Program terminated." && exit
             if imenu -c "Would you like to set $1 to $CUSTOMAPP?"; then
-                gsettings set org.therepoclub.instamenu.preferences $1 $CUSTOMAPP
-                notify-send "instamenue_settings" "$1 changed from $2 to $CUSTOMAPP" && asksetting
+                gsettings set org.therepoclub.repomenu.preferences $1 $CUSTOMAPP
+                notify-send "repomenue_settings" "$1 changed from $2 to $CUSTOMAPP" && asksetting
             else
                 defaultapplicationsettings
                 echo "Program terminated." && exit
@@ -135,7 +135,7 @@ selectwmdefault() {
             [ -z "$CUSTOMAPP" ] && echo "Program terminated." && exit
             if imenu -c "Would you like to set $1 to $CUSTOMAPP?"; then
                 gsettings set org.therepoclub.instawm.preferences $1 $CUSTOMAPP
-                notify-send "instamenue_settings" "$1 changed from $2 to $CUSTOMAPP" && asksetting
+                notify-send "repomenue_settings" "$1 changed from $2 to $CUSTOMAPP" && asksetting
             else
                 defaultapplicationsettings
                 echo "Program terminated." && exit
@@ -178,7 +178,7 @@ defaultapplicationsettingsoptions() {
 :y Back
 :r Close Settings"
 
-    echo -e "$apps$wm$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
+    echo -e "$apps$wm$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 
 }
 
@@ -244,7 +244,7 @@ soundsettingsoptions() {
 :y Back
 :r Close Settings"
 
-    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
+    echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 soundsettings() {
@@ -275,7 +275,7 @@ appearancesettingsoptions() {
 :y Back
 :r Close Settings"
 
-    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
+    echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 appearancesettings() {
@@ -311,7 +311,7 @@ displaysettingsoptions() {
 :y Back
 :r Close Settings"
 
-    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
+    echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 displaysettings() {
@@ -321,14 +321,14 @@ displaysettings() {
         [ -n "$CHOICE" ] || exit
         case $CHOICE in
         *Display*)
-            instamenue_randr &
+            repomenue_randr &
             ;;
         *Save*)
-            notify-send "instamenue_settings" "Saving monitor settings"
+            notify-send "repomenue_settings" "Saving monitor settings"
             autorandr --force --save $XDG_CURRENT_DESKTOP
             ;;
         *Load*)
-            notify-send "instamenue_settings" "Loading monitor settings"
+            notify-send "repomenue_settings" "Loading monitor settings"
             autorandr --force --load $XDG_CURRENT_DESKTOP
             ;;
         *Back)
@@ -351,7 +351,7 @@ asksettingoptions() {
 :b Default Applications
 :r Close Settings"
 
-    echo -e "$options" | instamenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
+    echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 asksetting() {
@@ -368,7 +368,7 @@ asksetting() {
             appearancesettings
             ;;
         *Software)
-            instamenue_pacman &
+            repomenue_pacman &
             ;;
         *Display)
             displaysettings
@@ -386,7 +386,7 @@ asksetting() {
             languagesettings
             ;;
         *Network)
-            instamenue_network &
+            repomenue_network &
             ;;
         *Storage)
             storagesettings

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-# path:       /usr/bin/instamenue_systemctl_user
+# path:       /usr/bin/repomenue_systemctl_user
 # author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/instamenu-extra
+# github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-01-03 12:34:47.440579
 
-# Use systemctl --user from instamenu. Useful in tiling wms.
+# Use systemctl --user from repomenu. Useful in tiling wms.
 
 unset opts
 unset service
@@ -17,16 +17,16 @@ initsys=$(cat /proc/1/comm)
 [[ "$initsys" == "systemd" ]] || exit 100
 
 ##
-# Consistent instamenu commands, specific colors for instamenu.
+# Consistent repomenu commands, specific colors for repomenu.
 # params: message, print, ...
-# message: To be displayed as the prompt for instamenu
-# print:   The words to populate the list for instamenu
+# message: To be displayed as the prompt for repomenu
+# print:   The words to populate the list for repomenu
 ##
-instamenucmd() {
+repomenucmd() {
   local mesg=$1
   shift
   local printing=("$@")
-  printf "%s\n" "${printing[@]}" | instamenu -c -w 700 -l 10\
+  printf "%s\n" "${printing[@]}" | repomenu -c -w 700 -l 10\
     -p "$mesg"
 }
 
@@ -50,7 +50,7 @@ get_systemctl_files() {
   printf -- "%s" "$(systemctl --no-legend --full --user --type=service,socket --all list-unit-files | sed -n "s/ .*//p")"
 }
 get_path_files() {
-  printf -- "%s" "$(instamenu_path)"
+  printf -- "%s" "$(repomenu_path)"
 }
 
 # Depending on the case, we want to filter by a specific state of unit.
@@ -81,15 +81,15 @@ find_services () {
 }
 
 # Get the command to be run from the `opts` list
-cmd="$(instamenucmd "Action:" "${opts[@]}")"
+cmd="$(repomenucmd "Action:" "${opts[@]}")"
 
 [[ -z $cmd ]] && exit 1
 
 # Get the unit that is going to be run by systemctl. Can be a list of units,
-# just as running it from the command line, though instamenu will only display the
+# just as running it from the command line, though repomenu will only display the
 # first one.
 service=($(find_services "$cmd"))
-unit="$(instamenucmd "systemctl --user $cmd" "${service[@]}")"
+unit="$(repomenucmd "systemctl --user $cmd" "${service[@]}")"
 
 [[ -z $unit ]] && exit 2
 
@@ -97,7 +97,7 @@ unit="$(instamenucmd "systemctl --user $cmd" "${service[@]}")"
 # specially, and will open a alacritty window displaying the status output,
 # otherwise we just run systemctl --user with the specified command and unit.
 if [[ $cmd == "status" ]]; then
-  alacritty --title "instamenu-systemctl-user" -e /usr/bin/bash -c "systemctl --user $cmd $unit; read "
+  alacritty --title "repomenu-systemctl-user" -e /usr/bin/bash -c "systemctl --user $cmd $unit; read "
 elif [[ $cmd == "run" ]]; then
   systemd-run --user --unit="run-${unit}" "$unit"
 else

@@ -17,7 +17,7 @@ if [[ -n $selected ]]; then
     # Piping No/Yes into repomenu as a safety measure, in case you
     # select a process that you don't actually want killed.
 
-    if imenu -c "Kill $selected?"; then
+    if rmenu -c "Kill $selected?"; then
         selpid="$(awk '{print $1}' <<< "$selected")";
         kill -9 "$selpid"
 		echo "Process $selected has been killed." && exit 0

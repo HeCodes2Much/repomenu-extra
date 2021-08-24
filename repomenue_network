@@ -21,7 +21,7 @@ getConnectionsOther() {
 }
 
 getConnected() {
-    connected=$(getConnections | grep "*" | cut -b 9- | sed s/Repeater//g | awk {'printf ("[Connected]|%s|%s|%s|%s|\n", $1, $8, $9, $2)'} | column -t -s '|' | sort -k4,4 -u)
+    connected=$(getConnections | grep "^*" | cut -b 9- | sed s/Repeater//g | awk {'printf ("[Connected]|%s|%s|%s|%s|\n", $1, $8, $9, $2)'} | column -t -s '|' | sort -k4,4 -u)
     [[ -z $connected ]] && exit
     printf "%s" "$connected"
 }

@@ -3,11 +3,6 @@
 
 include config.mk
 
-clean:
-	rm -rf $(DESTDIR)$(PREFIX)/bin/repomenue_*\
-		$(DESTDIR)$(PREFIX)/bin/bm\
-		$(DESTDIR)$(SHAREPREFIX)/repomenu/emoji-list
-
 install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp -f repomenue_* $(DESTDIR)$(PREFIX)/bin

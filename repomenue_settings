@@ -155,7 +155,7 @@ selectwmdefault() {
 
 defaultapplicationsettingsoptions() {
     getsettings
-    if command -v instawm &> /dev/null; then
+    if command -v repowm &> /dev/null; then
         wm="\n>>h Window Manager defaults
 :g ClipMenu
 :g WMSettings
@@ -344,7 +344,7 @@ displaysettings() {
 
 asksettingoptions() {
     options=">>h Settings
-:b 墳Sound
+:b ﱘSound
 :b Network
 :b Display
 :b Install Software

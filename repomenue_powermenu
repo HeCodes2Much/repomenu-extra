@@ -45,6 +45,17 @@ triggerFunction() {
     fi
 }
 
+if [ $DESKTOP_SESSION ]; then
+    wmde=$DESKTOP_SESSION
+else
+    id=$(xprop -root -notype _NET_SUPPORTING_WM_CHECK)
+    id=${id##* }
+    wm=$(xprop -id "$id" -notype -len 100 -f _NET_WM_NAME 8t)
+    wm=${wm/*WM_NAME = }
+    wm=${wm/\"}
+    wmde=${wm/\"*}
+fi
+
 LOOPSETTING="true"
 while [ -n "$LOOPSETTING" ]; do
     CHOICE="$(asksetting)"
@@ -52,7 +63,7 @@ while [ -n "$LOOPSETTING" ]; do
     unset LOOPSETTING
     case "$CHOICE" in
         *Logout)
-            pkill $DESKTOP_SESSION
+            pkill $wmde
             ;;
         *Lock)
             multimonitorlock -l -- --timestr="%H:%M"

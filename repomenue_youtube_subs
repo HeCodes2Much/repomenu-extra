@@ -6,7 +6,7 @@
 # The $SUBS_FILE is a text file containing usernames or channel IDs
 # comments and blank lines are ignored.
 #
-# path:       /usr/bin/repomenue_mount
+# path:       /usr/bin/repomenue_youtube_subs
 # author:     The-Repo-Club [wayne6324@gmail.com]
 # github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-01-03 12:34:47.440579

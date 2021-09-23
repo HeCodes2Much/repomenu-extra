@@ -16,7 +16,7 @@ getsettings() {
 }
 
 asksetting() {
-    options=$(ls $HOME/.config/repomenu/scripts/)
+    options=$(ls "$HOME/.config/repomenu/scripts/")
 
     echo ">>h Work on which script
 $options" | repomenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
@@ -28,8 +28,8 @@ while [ -n "$LOOPSETTING" ]; do
     FILE="$HOME/.config/repomenu/scripts/$(asksetting)"
     unset LOOPSETTING
     if [ -f "$FILE" ]; then
-        $TEXTEDITOR $FILE
-    else 
+        $TEXTEDITOR "$FILE"
+    else
         echo "Program terminated." && exit 1
     fi
 done

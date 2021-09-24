@@ -23,7 +23,7 @@ function load() {
 
 }
 
-choice=$(load | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Add/Open bookmark:...}" -H -x 10000 -wm)
+choice=$(load | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Add/Open bookmark:...}" -H -x 10000)
 
 LOOPSETTING="true"
 while [ -n "$LOOPSETTING" ]; do

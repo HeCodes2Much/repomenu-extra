@@ -26,7 +26,7 @@ while [ "$DONE" -eq 0 ] ; do
   if [ "$LEVEL" -ne 0 ] ; then
     password_files=(".." "${password_files[@]}")
   fi
-  entry=$(printf ':g  %s\n' "${password_files[@]}" | repomenu "$@" -l 10 -q "Search for a password:")
+  entry=$(printf ':g  %s\n' "${password_files[@]}" | repomenu "$@" -q "Search for a password:" -c -ps 0 -l 10 -w -600 -i -h -1)
   entry=$(echo $entry | sed "s/:g  //")
 
   if [ -z "$entry" ] ; then
@@ -47,7 +47,7 @@ while [ "$DONE" -eq 0 ] ; do
 
       if [[ $typeit -eq 0 ]]; then
         #pass show -c "$SELECTION" 2>/dev/null
-        ENTRY_FIELD=$(echo -e ":r  Password\n:b  URL\n:g  Login" | repomenu "$@" -q "Select a field:")
+        ENTRY_FIELD=$(echo -e ":r  Password\n:b  URL\n:g  Login" | repomenu "$@" -q "Select a field:" -c -ps 0 -l 10 -w -400 -i -h -1)
         if [[ $ENTRY_FIELD = *'Password' ]]; then
             PASSWORD=$(pass show "$SELECTION" | head -1)
             echo -e "$PASSWORD" | xclip -selection clipboard

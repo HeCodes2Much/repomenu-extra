@@ -29,7 +29,7 @@ asksetting() {
 :r 襤Shutdown"
 
     echo -e ">>h Uptime: $(getuptime)
-$options" | repomenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
+$options" | repomenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Power Menu...}"
 }
 
 triggerFunction() {

@@ -4,8 +4,8 @@ shopt -s nullglob globstar
 
 typeit=0
 if [[ $1 == "--type" ]]; then
-	typeit=1
-	shift
+    typeit=1
+    shift
 fi
 
 
@@ -19,52 +19,70 @@ URL_FIELD='url'
 LOGIN_FIELD='login'
 
 while [ "$DONE" -eq 0 ] ; do
-  password_files=( "$STARTDIR"/* )
-  password_files=( "${password_files[@]#"$STARTDIR"/}" )
-  password_files=( "${password_files[@]%.gpg}" )
+    password_files=( "$STARTDIR"/* )
+    password_files=( "${password_files[@]#"$STARTDIR"/}" )
+    password_files=( "${password_files[@]%.gpg}" )
 
-  if [ "$LEVEL" -ne 0 ] ; then
-    password_files=(".." "${password_files[@]}")
-  fi
-  entry=$(printf ':g  %s\n' "${password_files[@]}" | repomenu "$@" -q "Search for a password:" -c -ps 0 -l 10 -w -600 -i -h -1)
-  entry=$(echo $entry | sed "s/:g  //")
+    if [ "$LEVEL" -ne 0 ] ; then
+        password_files=(".." "${password_files[@]}")
+    fi
+    entry=$(printf ':g  %s\n' "${password_files[@]}" | repomenu "$@" -q "Search for a password:" -c -ps 0 -l 10 -w -600 -i -h -1)
+    entry=$(echo $entry | sed "s/:g  //")
 
-  if [ -z "$entry" ] ; then
+    if [ -z "$entry" ] ; then
     DONE=1
     exit
-  fi
+    fi
 
-  if [ "$entry" != ".." ] ; then
-    PREVSELECTION=$SELECTION
-    SELECTION="$SELECTION/$entry"
+    if [ "$entry" != ".." ] ; then
+        PREVSELECTION=$SELECTION
+        SELECTION="$SELECTION/$entry"
 
     # check if another dir
     if [ -d "$STARTDIR/$entry" ] ; then
-      STARTDIR="$STARTDIR/$entry"
-      LEVEL=$((LEVEL+1))
+        STARTDIR="$STARTDIR/$entry"
+        LEVEL=$((LEVEL+1))
     else
-      # not a directory so it must be a real password entry
+        # not a directory so it must be a real password entry
 
-      if [[ $typeit -eq 0 ]]; then
-        #pass show -c "$SELECTION" 2>/dev/null
-        ENTRY_FIELD=$(echo -e ":r  Password\n:b  URL\n:g  Login" | repomenu "$@" -q "Select a field:" -c -ps 0 -l 10 -w -400 -i -h -1)
-        if [[ $ENTRY_FIELD = *'Password' ]]; then
+        if [[ $typeit -eq 0 ]]; then
+            FIELDS=()
             PASSWORD=$(pass show "$SELECTION" | head -1)
-            echo -e "$PASSWORD" | xclip -selection clipboard
-        elif [[ $ENTRY_FIELD = *'URL' ]]; then
-            URL=$(pass show "$SELECTION" | grep "${URL_FIELD}" | gawk '{sub(/:/,"")}{print $2}1' | head -1)
-            echo -e "$URL" | xclip -selection clipboard
-        elif [[ $ENTRY_FIELD = *'Login' ]]; then
-            LOGIN=$(pass show "$SELECTION" | grep "${LOGIN_FIELD}" | gawk '{sub(/:/,"")}{print $2}1' | head -1)
-            echo -e "$LOGIN" | xclip -selection clipboard
+            OTHER=$(pass show "$SELECTION" | awk -F: '(NR>1){ st = index($0,":");print $1 substr($0,st+1)}')
+            FIELDS+=":r  Password\n"
+            while read -r line; do
+                FIELD=$(echo -e "$line" | awk '{print $1}')
+                if [ "$FIELD" = "login" ]; then
+                    FIELDS+=":g  ${FIELD^}\n"
+                elif [ "$FIELD" = "url" ]; then
+                    FIELDS+=":b 爵 ${FIELD^^}\n"
+                else
+                    FIELDS+=":p  ${FIELD^}\n"
+                fi
+            done <<< "$OTHER"
+
+            ENTRY_FIELD=$(echo -e "$FIELDS" | sed '/^$/d' | repomenu "$@" -q "Select a field:" -c -ps 0 -l 10 -w -400 -i -h -1 -wm)
+            if [[ $ENTRY_FIELD = *'Password' ]]; then
+                PASSWORD=$(pass show "$SELECTION" | sed "s/^[ \t]*//" | head -1)
+                echo -e "$PASSWORD" | xclip -selection clipboard
+            elif [[ $ENTRY_FIELD = *'URL' ]]; then
+                URL=$(pass show "$SELECTION" | grep "${URL_FIELD}" | awk '{sub(/:/,"")}{print $2}1' | sed "s/^[ \t]*//" | head -1)
+                echo -e "$URL" | xclip -selection clipboard
+            elif [[ $ENTRY_FIELD = *'Login' ]]; then
+                LOGIN=$(pass show "$SELECTION" | grep "${LOGIN_FIELD}" | awk '{sub(/:/,"")}{print $2}1' | sed "s/^[ \t]*//" | head -1)
+                echo -e "$LOGIN" | xclip -selection clipboard
+            else
+                CUSTOM_FIELD=$(echo -e "$ENTRY_FIELD" | awk 'NF>1 {sub("^[^A-Z]*","")} {print}')
+                CUSTOM_FIELD=$(pass show "$SELECTION" | grep "${CUSTOM_FIELD,,}" | awk '{sub(/:/,"")}{first = $1; $1=""; print $0;}1' | sed "s/^[ \t]*//" | head -1)
+                echo -e "$CUSTOM_FIELD"
+            fi
+        else
+            xdotool - <<<"type --clearmodifiers -- $(pass show "$SELECTION" | head -n 1)"
         fi
-      else
-        xdotool - <<<"type --clearmodifiers -- $(pass show "$SELECTION" | head -n 1)"
-      fi
-      DONE=1
+        DONE=1
     fi
 
-  else
+else
     LEVEL=$((LEVEL-1))
     SELECTION=$PREVSELECTION
     STARTDIR="$BASEDIR/$SELECTION"

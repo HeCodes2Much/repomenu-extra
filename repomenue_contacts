@@ -10,7 +10,7 @@ fi
 xdotool="xclip -sel clip"
 
 
-STARTDIR=${PEOPLE_STORE_DIR-~/.people-store}
+STARTDIR=${PEOPLE_STORE_DIR-~/.contact-store}
 BASEDIR=$STARTDIR
 DONE=0
 LEVEL=0
@@ -20,14 +20,14 @@ EMAIL_FIELD='email'
 ADDRESS_FIELD='address'
 
 while [ "$DONE" -eq 0 ] ; do
-    people_files=( "$STARTDIR"/* )
-    people_files=( "${people_files[@]#"$STARTDIR"/}" )
-    people_files=( "${people_files[@]%.gpg}" )
+    contact_files=( "$STARTDIR"/* )
+    contact_files=( "${contact_files[@]#"$STARTDIR"/}" )
+    contact_files=( "${contact_files[@]%.gpg}" )
 
     if [ "$LEVEL" -ne 0 ] ; then
-        people_files=(".." "${people_files[@]}")
+        contact_files=(".." "${contact_files[@]}")
     fi
-    entry=$(printf ':g  %s\n' "${people_files[@]}" | repomenu "$@" -q "Search for a people:" -c -ps 0 -l 10 -w -500 -i -h -1)
+    entry=$(printf ':g  %s\n' "${contact_files[@]}" | repomenu "$@" -q "Search for a contact:" -c -ps 0 -l 10 -w -500 -i -h -1)
     entry=$(echo $entry | sed "s/:g  //")
 
     if [ -z "$entry" ] ; then
@@ -44,7 +44,7 @@ while [ "$DONE" -eq 0 ] ; do
         STARTDIR="$STARTDIR/$entry"
         LEVEL=$((LEVEL+1))
     else
-        # not a directory so it must be a real people entry
+        # not a directory so it must be a real contact entry
 
         if [[ $typeit -eq 0 ]]; then
             FIELDS=()

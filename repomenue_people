@@ -10,29 +10,29 @@ fi
 xdotool="xclip -sel clip"
 
 
-STARTDIR=${PASSWORD_STORE_DIR-~/.password-store}
+STARTDIR=${PEOPLE_STORE_DIR-~/.people-store}
 BASEDIR=$STARTDIR
 DONE=0
 LEVEL=0
 PREVSELECTION=""
 SELECTION=""
-URL_FIELD='url'
-LOGIN_FIELD='login'
+EMAIL_FIELD='email'
+ADDRESS_FIELD='address'
 
 while [ "$DONE" -eq 0 ] ; do
-    password_files=( "$STARTDIR"/* )
-    password_files=( "${password_files[@]#"$STARTDIR"/}" )
-    password_files=( "${password_files[@]%.gpg}" )
+    people_files=( "$STARTDIR"/* )
+    people_files=( "${people_files[@]#"$STARTDIR"/}" )
+    people_files=( "${people_files[@]%.gpg}" )
 
     if [ "$LEVEL" -ne 0 ] ; then
-        password_files=(".." "${password_files[@]}")
+        people_files=(".." "${people_files[@]}")
     fi
-    entry=$(printf ':g  %s\n' "${password_files[@]}" | repomenu "$@" -q "Search for a password:" -c -ps 0 -l 10 -w -600 -i -h -1)
-    entry=$(echo $entry | sed "s/:g  //")
+    entry=$(printf ':g  %s\n' "${people_files[@]}" | repomenu "$@" -q "Search for a people:" -c -ps 0 -l 10 -w -500 -i -h -1)
+    entry=$(echo $entry | sed "s/:g  //")
 
     if [ -z "$entry" ] ; then
-        DONE=1
-        exit
+    DONE=1
+    exit
     fi
 
     if [ "$entry" != ".." ] ; then
@@ -44,58 +44,60 @@ while [ "$DONE" -eq 0 ] ; do
         STARTDIR="$STARTDIR/$entry"
         LEVEL=$((LEVEL+1))
     else
-        # not a directory so it must be a real password entry
+        # not a directory so it must be a real people entry
 
         if [[ $typeit -eq 0 ]]; then
             FIELDS=()
-            PASSWORD=$(pass show "$SELECTION" | head -1 | sed '/^$/d')
-            OTHER=$(pass show "$SELECTION" | awk -F: '(NR>1){ st = index($0,":");print $1 substr($0,st+1)}')
-            FIELDS+=":r  Password\n"
+            PEOPLE=$(ppl show "$SELECTION" | head -1)
+            OTHER=$(ppl show "$SELECTION" | awk -F: '(NR>1){ st = index($0,":");print $1 substr($0,st+1)}')
+            FIELDS+=":r  Phone Number\n"
             if [ ! -z "${OTHER}" ]; then
                 while read -r line; do
                     FIELD=$(echo -e "$line" | awk '{print $1}')
-                    if [ "$FIELD" = "login" ]; then
-                        FIELDS+=":g  ${FIELD^}\n"
-                    elif [ "$FIELD" = "url" ]; then
-                        FIELDS+=":b 爵 ${FIELD^^}\n"
+                    if [ "$FIELD" = "email" ]; then
+                        FIELDS+=":g  ${FIELD^}\n"
+                    elif [ "$FIELD" = "address" ]; then
+                        FIELDS+=":b  ${FIELD^}\n"
                     else
-                        FIELDS+=":p  ${FIELD^}\n"
+                        FIELDS+=":p  ${FIELD^}\n"
                     fi
                 done <<< "$OTHER"
             fi
 
+            echo -e "$FIELDS"
+
             ENTRY_FIELD=$(echo -e "$FIELDS" | sed '/^$/d' | repomenu "$@" -q "Select a field:" -c -ps 0 -l 10 -w -400 -i -h -1)
-            if [[ $ENTRY_FIELD = *'Password' ]]; then
-                PASSWORD=$(pass show "$SELECTION" | sed "s/^[ \t]*//" | head -1 | sed '/^$/d')
+            if [[ $ENTRY_FIELD = *'Phone Number' ]]; then
+                PEOPLE=$(ppl show "$SELECTION" | sed "s/^[ \t]*//" | head -1)
                 clipmenu-ctl disable
                 if [ $(clipmenu-ctl status) == "enabled" ]; then
                     clipmenu-ctl disable
                 else
-                    echo -e "$PASSWORD" | $xdotool
+                    echo -e "$PEOPLE" | $xdotool
                 fi
                 clipmenu-ctl enable
                 if [ $(clipmenu-ctl status) == "disabled" ]; then
                     clipmenu-ctl enable
                 fi
-            elif [[ $ENTRY_FIELD = *'URL' ]]; then
-                URL=$(pass show "$SELECTION" | grep "${URL_FIELD}" | awk '{sub(/:/,"")}{print $2}1' | sed "s/^[ \t]*//" | head -1 | sed '/^$/d')
+            elif [[ $ENTRY_FIELD = *'Email' ]]; then
+                EMAIL=$(ppl show "$SELECTION" | grep "${EMAIL_FIELD}" | awk '{sub(/:/,"")}{print $2}1' | sed "s/^[ \t]*//" | head -1)
                 clipmenu-ctl disable
                 if [ $(clipmenu-ctl status) == "enabled" ]; then
                     clipmenu-ctl disable
                 else
-                    echo -e "$URL" | $xdotool
+                    echo -e "$EMAIL" | $xdotool
                 fi
                 clipmenu-ctl enable
                 if [ $(clipmenu-ctl status) == "disabled" ]; then
                     clipmenu-ctl enable
                 fi
-            elif [[ $ENTRY_FIELD = *'Login' ]]; then
-                LOGIN=$(pass show "$SELECTION" | grep "${LOGIN_FIELD}" | awk '{sub(/:/,"")}{print $2}1' | sed "s/^[ \t]*//" | head -1 | sed '/^$/d')
+            elif [[ $ENTRY_FIELD = *'Address' ]]; then
+                ADDRESS=$(ppl show "$SELECTION" | grep "${ADDRESS_FIELD}" | awk '{sub(/:/,"")}{print $2}1' | sed "s/^[ \t]*//" | head -1)
                 clipmenu-ctl disable
                 if [ $(clipmenu-ctl status) == "enabled" ]; then
                     clipmenu-ctl disable
                 else
-                    echo -e "$LOGIN" | $xdotool
+                    echo -e "$ADDRESS" | $xdotool
                 fi
                 clipmenu-ctl enable
                 if [ $(clipmenu-ctl status) == "disabled" ]; then
@@ -103,7 +105,7 @@ while [ "$DONE" -eq 0 ] ; do
                 fi
             else
                 CUSTOM_FIELD=$(echo -e "$ENTRY_FIELD" | awk 'NF>1 {sub("^[^A-Z]*","")} {print}')
-                CUSTOM_FIELD=$(pass show "$SELECTION" | grep "${CUSTOM_FIELD,,}" | awk '{sub(/:/,"")}{first = $1; $1=""; print $0;}1' | sed "s/^[ \t]*//" | head -1 | sed '/^$/d')
+                CUSTOM_FIELD=$(ppl show "$SELECTION" | grep "${CUSTOM_FIELD,,}" | awk '{sub(/:/,"")}{first = $1; $1=""; print $0;}1' | sed "s/^[ \t]*//" | head -1)
                 clipmenu-ctl disable
                 if [ $(clipmenu-ctl status) == "enabled" ]; then
                     clipmenu-ctl disable
@@ -116,7 +118,7 @@ while [ "$DONE" -eq 0 ] ; do
                 fi
             fi
         else
-            xdotool - <<<"type --clearmodifiers -- $(pass show "$SELECTION" | head -n 1 | sed '/^$/d')"
+            xdotool - <<<"type --clearmodifiers -- $(ppl show "$SELECTION" | head -n 1)"
         fi
         DONE=1
     fi

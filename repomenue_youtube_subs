@@ -12,16 +12,16 @@
 # date:       2021-01-03 12:34:47.440579
 #
 
-instantmenu() {
+repomenus() {
     repomenu -wm -c -w 750 -l 20 -p "Youtube Subs:"
 }
 
 # -/-/-/-/- Settings -/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 : "${SUBS_FILE:=${HOME}/.config/repomenu/configs/subs.ini}"
-: "${SUBS_MENU_PROG:=instantmenu}"
+: "${SUBS_MENU_PROG:=repomenus}"
 : "${SUBS:=${HOME}/.cache/subs}"
 : "${SUBS_LINKS:=$SUBS/links}"
-: "${SUBS_OPEN:=$(gsettings get org.therepoclub.repomenu.preferences webbrowser | sed s/\'//g)}"
+: "${SUBS_OPEN:=$(gsettings get org.therepoclub.repomenu.preferences videoplayer | sed s/\'//g)}"
 : "${SUBS_CACHE:=$SUBS/cache}"
 : "${SUBS_SLEEP_VALUE:=0.05}" # raise this if you experience problems
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -65,7 +65,7 @@ usage() {
       %s [options] [<command>]...
 
     Options:
-      -h, --help                                Display help.
+      -h, --help                        Display help.
     " "${0##*/}"
 
     if command -v repowm &> /dev/null; then

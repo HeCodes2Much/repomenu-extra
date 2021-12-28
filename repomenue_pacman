@@ -5,23 +5,45 @@
 # github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-01-03 12:34:47.440579
 
+repomenuGetFunction() {
+	get=$(gsettings get org.therepoclub.repomenu.preferences "$1")
+	printf -v "${1^^}" '%s' "${get//\'}"
+}
+
+repowmGetFunction() {
+	get=$(gsettings get org.therepoclub.repowm.preferences "$1")
+	printf -v "${1^^}" '%s' "${get//\'}"
+}
+
 getsettings() {
-    TERMINAL=$(gsettings get org.therepoclub.repomenu.preferences terminal | sed s/\'//g)
-    WEBBROWSER=$(gsettings get org.therepoclub.repomenu.preferences webbrowser | sed s/\'//g)
-    FILEMANAGER=$(gsettings get org.therepoclub.repomenu.preferences filemanager | sed s/\'//g)
-    MAILREADER=$(gsettings get org.therepoclub.repomenu.preferences mailreader | sed s/\'//g)
-    TEXTEDITOR=$(gsettings get org.therepoclub.repomenu.preferences texteditor | sed s/\'//g)
-    HYPERVISOR=$(gsettings get org.therepoclub.repomenu.preferences hypervisor | sed s/\'//g)
-    GITBROWSER=$(gsettings get org.therepoclub.repomenu.preferences gitbrowser | sed s/\'//g)
+    repomenuGetFunction terminal
+    repomenuGetFunction webbrowser
+    repomenuGetFunction filemanager
+    repomenuGetFunction mailreader
+    repomenuGetFunction texteditor
+    repomenuGetFunction hypervisor
+    repomenuGetFunction gitbrowser
+    repomenuGetFunction musicplayer
+    repomenuGetFunction videoplayer
+
+    repowmGetFunction systemmonitorcmd
+    repowmGetFunction instasettingscmd
+    repowmGetFunction startmenucmd
+    repowmGetFunction clipmenucmd
+    repowmGetFunction smartmenucmd
+    repowmGetFunction powermenucmd
+    repowmGetFunction repomenucmd
+    repowmGetFunction passmenucmd
 }
 
 cleanup () {
     cleanPackages=()
     for p in $(pacman -Qtdq); do
-        cleanPackages+="$p"
+        cleanPackages+=${p##*/}$' '
     done
     if [[ ! -z "$cleanPackages" ]]; then
-        $TERMINAL -e bash -c "(sudo pacman -Rns $cleanPackages) && notify-send 'repomenue_pacman' 'finished installing '$PACKAGE"
+        $TERMINAL -e bash -c "(sudo pacman -Rns $cleanPackages) && notify-send 'repomenue_pacman' 'finished cleaning '$cleanPackages"
+        #notify-send "repomenue_pacman" "finished cleaning $cleanPackages"
     else
         $TERMINAL -e bash -c "notify-send 'Notice' 'No unused dependencies found!'"
     fi

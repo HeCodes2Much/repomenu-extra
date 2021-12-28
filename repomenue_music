@@ -5,17 +5,62 @@
 # github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-01-03 12:34:47.440579
 
+while IFS= read -r Line; do
+	Get=$(gsettings get org.therepoclub.repomenu.preferences "$Line")
+	printf -v "REPOMENU_${Line^^}" '%s' "${Get//\'}"
+done << 'EOF'
+terminal
+webbrowser
+filemanager
+mailreader
+texteditor
+hypervisor
+gitbrowser
+musicplayer
+videoplayer
+EOF
+
+while IFS= read -r Line; do
+	Get=$(gsettings get org.therepoclub.repowm.preferences "$Line")
+	printf -v "REPOWM_${Line^^}" '%s' "${Get//\'}"
+done << 'EOF'
+systemmonitorcmd
+instasettingscmd
+startmenucmd
+clipmenucmd
+smartmenucmd
+powermenucmd
+repomenucmd
+passmenucmd
+EOF
+
 asksetting() {
     playlist=$@
     if [[ -z ${playlist} ]];
     then
-        options=$(ls $HOME/Music | grep '/*.ogg\|/*.mp3')
+        for Song in $HOME/Music/*; do
+	        if [ -f "$Song" ]; then
+		        Name=${Song##*/}
+		        case $Name in
+			        *.mp3|*.flac|*.wav|.ogg)
+				        options+=${Song##*/}$'\n'
+		        esac
+	        fi
+        done
     else
-        options=$(ls $playlist | grep '/*.ogg\|/*.mp3')
+        for Song in $playlist/*; do
+	        if [ -f "$Song" ]; then
+		        Name=${Song##*/}
+		        case $Name in
+			        *.mp3|*.flac|*.wav|*.ogg)
+				        options+=${Song##*/}$'\n'
+		        esac
+	        fi
+        done
     fi
     echo -e ">>h Select a song to play.
-$options
-:r Close music player" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -x 10000
+${options::-1}
+:r Close music player" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -x 10000 -wm
 }
 
 LOOPSETTING="true"
@@ -24,7 +69,7 @@ while [ -n "$LOOPSETTING" ]; do
     [ -n "$CHOICE" ] || exit
     unset LOOPSETTING
     case $CHOICE in
-    *.ogg)
+    *.mp3|*.flac|*.wav|*.ogg)
         playlist=$@
         if [[ -z ${playlist} ]];
         then
@@ -32,24 +77,13 @@ while [ -n "$LOOPSETTING" ]; do
         else
             folder=$playlist
         fi
-        ffplay -nodisp "$folder/$CHOICE" &
-        ;;
-    *.mp3)
-        playlist=$@
-        if [[ -z ${playlist} ]];
-        then
-            folder=$HOME/Music
-        else
-            folder=$playlist
-        fi
-        ffplay -nodisp "$folder/$CHOICE" &
+        $REPOMENU_MUSICPLAYER "$folder/$CHOICE" &
         ;;
     *Close*)
-        pkill ffplay &
+        pkill ${REPOMENU_MUSICPLAYER%% *} &
         ;;
     *)
         echo "Program terminated." && exit
         ;;
     esac
 done
-

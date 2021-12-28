@@ -6,11 +6,13 @@
 # The $SUBS_FILE is a text file containing usernames or channel IDs
 # comments and blank lines are ignored.
 #
-# path:       /usr/bin/repomenue_youtube_subs
-# author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/repomenu-extra
-# date:       2021-01-03 12:34:47.440579
-#
+#------------------------------------------------------------------------------
+# Path         - /usr/bin/repomenue_youtube_subs
+# GitHub       - https://github.com/The-Repo-Club/
+# Author       - The-Repo-Club [wayne6324@gmail.com]
+# Start On     - Sun 03 Jan 19:04:06 GMT 2021
+# Modified On  - Mon 08 Nov 19:08:25 GMT 2021
+#------------------------------------------------------------------------------
 
 repomenus() {
     repomenu -wm -c -w 750 -l 20 -p "Youtube Subs:"

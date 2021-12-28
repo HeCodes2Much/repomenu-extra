@@ -5,34 +5,13 @@
 # github:     https://github.com/The-Repo-Club/repomenu-extra
 # date:       2021-01-03 12:34:47.440579
 
-while IFS= read -r Line; do
-	Get=$(gsettings get org.therepoclub.repomenu.preferences "$Line")
-	printf -v "REPOMENU_${Line^^}" '%s' "${Get//\'}"
-done << 'EOF'
-terminal
-webbrowser
-filemanager
-mailreader
-texteditor
-hypervisor
-gitbrowser
-musicplayer
-videoplayer
-EOF
-
-while IFS= read -r Line; do
-	Get=$(gsettings get org.therepoclub.repowm.preferences "$Line")
-	printf -v "REPOWM_${Line^^}" '%s' "${Get//\'}"
-done << 'EOF'
-systemmonitorcmd
-instasettingscmd
-startmenucmd
-clipmenucmd
-smartmenucmd
-powermenucmd
-repomenucmd
-passmenucmd
-EOF
+if command -v repomenu &> /dev/null; then
+    REPOMENU=/usr/share/repoclub/menu.ini
+    while IFS= read -r Line; do
+	    Get=$(gsettings get org.therepoclub.repomenu.preferences "$Line")
+	    printf -v "REPOMENU_${Line^^}" '%s' "${Get//\'}"
+    done < $REPOMENU
+fi
 
 asksetting() {
     playlist=$@

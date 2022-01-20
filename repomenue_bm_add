@@ -1,9 +1,22 @@
 #!/usr/bin/env bash
-
-# path:       /usr/bin/repomenue_bm_add
-# author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/repomenu-extra
-# date:       2021-03-10 12:34:47.440579
+# -*-coding:utf-8 -*-
+# Auto updated?
+#   Yes
+#File :
+#   repomenue_bm_add
+#Author :
+#   The-Repo-Club [wayne6324:gmail.com]
+#Github :
+#   https://github.com/The-Repo-Club/
+#
+# Created:
+#   Wed 10 March 2021, 12:34:47 PM [GMT]
+# Last edited:
+#   Thu 20 January 2022, 05:01:52 PM [GMT]
+#
+# Description:
+#   <Todo>
+#
 
 result() {
   echo -n | repomenu -p "${1:-Add a bookmark:...}"

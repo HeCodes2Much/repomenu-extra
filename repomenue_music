@@ -1,9 +1,22 @@
 #!/usr/bin/env bash
-
-# path:       /usr/bin/repomenue_smartrun
-# author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/repomenu-extra
-# date:       2021-01-03 12:34:47.440579
+# -*-coding:utf-8 -*-
+# Auto updated?
+#   Yes
+#File :
+#   repomenue_music
+#Author :
+#   The-Repo-Club [wayne6324:gmail.com]
+#Github :
+#   https://github.com/The-Repo-Club/
+#
+# Created:
+#   Wed 10 March 2021, 12:34:47 PM [GMT]
+# Last edited:
+#   Thu 20 January 2022, 05:04:41 PM [GMT]
+#
+# Description:
+#   <Todo>
+#
 
 if command -v repomenu &> /dev/null; then
     REPOMENU=/usr/share/repoclub/menu.ini

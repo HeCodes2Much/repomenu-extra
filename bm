@@ -1,9 +1,22 @@
 #!/usr/bin/env bash
-
-# path:       /usr/bin/bm
-# author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/repomenu-extra
-# date:       2021-03-10 12:34:47.440579
+# -*-coding:utf-8 -*-
+# Auto updated?
+#   Yes
+#File :
+#   bm
+#Author :
+#   The-Repo-Club [wayne6324:gmail.com]
+#Github :
+#   https://github.com/The-Repo-Club/
+#
+# Created:
+#   Wed 10 March 2021, 12:34:47 PM [GMT]
+# Last edited:
+#   Thu 20 January 2022, 05:00:44 PM [GMT]
+#
+# Description:
+#   <Todo>
+#
 
 # default filename for Baker config file (just the filename no path)
 readonly _BM_DEFAULT_CONFIG_FILENAME="${_BM_DEFAULT_CONFIG_FILENAME:=bm.conf}"

@@ -1,18 +1,26 @@
 #!/usr/bin/env bash
+# -*-coding:utf-8 -*-
+# Auto updated?
+#   Yes
+#File :
+#   repomenue_youtube_subs
+#Author :
+#   The-Repo-Club [wayne6324:gmail.com]
+#Github :
+#   https://github.com/The-Repo-Club/
 #
-# Watch your youtube subscriptions without a youtube account
-# via curl, repomenu, browser and basic unix commands.
+# Created:
+#   Sun 03 January 2021, 05:09:33 PM [GMT]
+# Last edited:
+#   Thu 20 January 2022, 05:10:19 PM [GMT]
 #
-# The $SUBS_FILE is a text file containing usernames or channel IDs
-# comments and blank lines are ignored.
+# Description:
+#   Watch your youtube subscriptions without a youtube account
+#   via curl, repomenu, browser and basic unix commands.
 #
-#------------------------------------------------------------------------------
-# Path         - /usr/bin/repomenue_youtube_subs
-# GitHub       - https://github.com/The-Repo-Club/
-# Author       - The-Repo-Club [wayne6324@gmail.com]
-# Start On     - Sun 03 Jan 19:04:06 GMT 2021
-# Modified On  - Mon 08 Nov 19:08:25 GMT 2021
-#------------------------------------------------------------------------------
+#   The $SUBS_FILE is a text file containing usernames or channel IDs
+#   comments and blank lines are ignored.
+#
 
 repomenus() {
     repomenu -wm -c -w 750 -l 20 -p "Youtube Subs:"

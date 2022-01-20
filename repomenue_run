@@ -1,12 +1,24 @@
 #!/usr/bin/env bash
+# -*-coding:utf-8 -*-
+# Auto updated?
+#   Yes
+#File :
+#   repomenue_run
+#Author :
+#   The-Repo-Club [wayne6324:gmail.com]
+#Github :
+#   https://github.com/The-Repo-Club/
+#
+# Created:
+#   Mon 27 Deccember 2021, 05:06:47 PM [GMT]
+# Last edited:
+#   Thu 20 January 2022, 05:07:01 PM [GMT]
+#
+# Description:
+#   <Todo>
+#
 
-#------------------------------------------------------------------------------
-# Path         - /usr/bin/repomenue_run
-# GitHub       - https://github.com/The-Repo-Club/
-# Author       - The-Repo-Club [wayne6324@gmail.com]
-# Start On     - Mon 27 Dec 19:26:13 GMT 2021
-# Modified On  - Mon 27 Dec 23:46:13 GMT 2021
-#------------------------------------------------------------------------------
+
 
 ## Set Colors (copied from makepkg)
 ALL_OFF="\e[1;0m"

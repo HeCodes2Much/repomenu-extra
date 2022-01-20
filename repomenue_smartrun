@@ -1,9 +1,23 @@
 #!/usr/bin/env bash
+# -*-coding:utf-8 -*-
+# Auto updated?
+#   Yes
+#File :
+#   repomenue_smartrun
+#Author :
+#   The-Repo-Club [wayne6324:gmail.com]
+#Github :
+#   https://github.com/The-Repo-Club/
+#
+# Created:
+#   Wed 10 March 2021, 12:34:47 PM [GMT]
+# Last edited:
+#   Thu 20 January 2022, 05:07:35 PM [GMT]
+#
+# Description:
+#   <Todo>
+#
 
-# path:       /usr/bin/repomenue_smartrun
-# author:     The-Repo-Club [wayne6324@gmail.com]
-# github:     https://github.com/The-Repo-Club/repomenu-extra
-# date:       2021-01-03 12:34:47.440579
 
 asksetting() {
     options1=$(printf '%s\n' ${PATH//:/\/* } | grep "repomenu_" | sed 's|^.*/||g' | awk '!NF || !seen[$0]++')

@@ -1,5 +1,23 @@
 #!/usr/bin/env bash
+# -*-coding:utf-8 -*-
+# Auto updated?
+#   Yes
+#File :
+#   repomenue_powermenu
+#Author :
+#   The-Repo-Club [wayne6324:gmail.com]
+#Github :
+#   https://github.com/The-Repo-Club/
 #
+# Created:
+#   Wed 10 March 2021, 12:34:47 PM [GMT]
+# Last edited:
+#   Thu 20 January 2022, 05:06:18 PM [GMT]
+#
+# Description:
+#   <Todo>
+#
+
 getuptime() {
     uptime -p >/dev/null 2>&1
 

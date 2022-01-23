@@ -12,21 +12,20 @@
 # Created:
 #   Wed 10 March 2021, 12:34:47 PM [GMT]
 # Modified:
-#   Fri 21 January 2022, 02:29:56 PM [GMT]
+#   Sun 23 January 2022, 05:53:39 PM [GMT]
 #
 # Description:
 #   <Todo>
 #
 
-
 repomenuGetFunction() {
-	get=$(gsettings get org.therepoclub.repomenu.preferences "$1")
-	printf -v "${1^^}" '%s' "${get//\'}"
+    get=$(gsettings get org.therepoclub.repomenu.preferences "$1")
+    printf -v "${1^^}" '%s' "${get//\'/}"
 }
 
 repowmGetFunction() {
-	get=$(gsettings get org.therepoclub.repowm.preferences "$1")
-	printf -v "${1^^}" '%s' "${get//\'}"
+    get=$(gsettings get org.therepoclub.repowm.preferences "$1")
+    printf -v "${1^^}" '%s' "${get//\'/}"
 }
 
 getsettings() {
@@ -50,7 +49,7 @@ getsettings() {
     repowmGetFunction passmenucmd
 }
 
-cleanup () {
+cleanup() {
     cleanPackages=()
     for p in $(pacman -Qtdq); do
         cleanPackages+=${p##*/}$' '
@@ -95,11 +94,11 @@ while [ -n "$LOOPSETTING" ]; do
         $TERMINAL -e bash -c "(sudo pacman -R $PACKAGE) && notify-send 'repomenue_pacman' 'finished uninstalling '$PACKAGE"
         ;;
     *Browse)
-        if pacman -Qs "octopi" > /dev/null ; then
+        if pacman -Qs "octopi" >/dev/null; then
             octopi &
-        elif pacman -Qs "pamac" > /dev/null ; then
+        elif pacman -Qs "pamac" >/dev/null; then
             pamac &
-        elif pacman -Qs "pkgbrowser" > /dev/null ; then
+        elif pacman -Qs "pkgbrowser" >/dev/null; then
             pkgbrowser &
         else
             $WEBBROWSER "https://archlinux.org/packages/"
@@ -112,7 +111,7 @@ while [ -n "$LOOPSETTING" ]; do
     *AUR*)
         PACKAGE="$(imenu -i 'enter package name')"
         if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
-        $TERMINAL -e bash -c "(instaaur -g $PACKAGE) && notify-send 'repomenue_pacman' 'finished installing '$PACKAGE"
+        $TERMINAL -e bash -c "(auracle clone $PACKAGE -C ~/.cache/pkg/) && notify-send 'repomenue_pacman' 'finished downloading '$PACKAGE"
         ;;
     *Update)
         $TERMINAL -e bash -c "(sudo pacman -Syyu) && notify-send 'repomenue_pacman' 'finished updating'"

@@ -12,7 +12,7 @@
 # Created:
 #   Wed 10 March 2021, 12:34:47 PM [GMT]
 # Modified:
-#   Fri 21 January 2022, 02:29:56 PM [GMT]
+#   Sun 23 January 2022, 12:01:36 PM [GMT]
 #
 # Description:
 #   <Todo>
@@ -53,50 +53,50 @@ $options" | repomenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Power Menu...}"
 triggerFunction() {
     init_system="$(cat /proc/1/comm)"
     if [[ $init_system = "systemd" ]]; then
-        systemctl $1
+        systemctl "$1"
     elif [[ $init_system = "init" ]]; then
-        loginctl $1
+        loginctl "$1"
     elif [[ $init_system = "runit" ]]; then
-        loginctl $1
+        loginctl "$1"
     else
-        systemctl $1
+        systemctl "$1"
     fi
 }
 
-if [ $DESKTOP_SESSION ]; then
+if [ "$DESKTOP_SESSION" ]; then
     wmde=$DESKTOP_SESSION
 else
     id=$(xprop -root -notype _NET_SUPPORTING_WM_CHECK)
     id=${id##* }
     wm=$(xprop -id "$id" -notype -len 100 -f _NET_WM_NAME 8t)
-    wm=${wm/*WM_NAME = }
-    wm=${wm/\"}
-    wmde=${wm/\"*}
+    wm=${wm/*WM_NAME = /}
+    wm=${wm/\"/}
+    wmde=${wm/\"*/}
 fi
 
 LOOPSETTING="true"
 while [ -n "$LOOPSETTING" ]; do
-    CHOICE="$(asksetting)"
+    CHOICE="$(asksetting "$@")"
     [ -n "$CHOICE" ] || exit
     unset LOOPSETTING
     case "$CHOICE" in
-        *Logout)
-            pkill $wmde
-            ;;
-        *Lock)
-            multimonitorlock -l -- --time-str="%I:%M:%S %p"
-            ;;
-        *Shutdown)
-            triggerFunction poweroff
-            ;;
-        *Restart)
-            triggerFunction reboot
-            ;;
-        *Sleep)
-            triggerFunction suspend
-            ;;
-        *)
-            echo "Program terminated." && exit 1
-            ;;
+    *Logout)
+        pkill "$wmde"
+        ;;
+    *Lock)
+        multimonitorlock -l -- --time-str="%I:%M:%S %p"
+        ;;
+    *Shutdown)
+        triggerFunction poweroff
+        ;;
+    *Restart)
+        triggerFunction reboot
+        ;;
+    *Sleep)
+        triggerFunction suspend
+        ;;
+    *)
+        echo "Program terminated." && exit 1
+        ;;
     esac
 done

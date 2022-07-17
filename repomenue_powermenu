@@ -1,102 +1,105 @@
 #!/usr/bin/env bash
-# -*-coding:utf-8 -*-
-# Auto updated?
+#-*-coding:utf-8 -*-
+#Auto updated?
 #   Yes
 #File :
 #   repomenue_powermenu
-#Author:
+#Author :
 #   The-Repo-Club [wayne6324@gmail.com]
-#Github:
+#Github :
 #   https://github.com/The-Repo-Club/
 #
-# Created:
-#   Wed 10 March 2021, 12:34:47 PM [GMT]
-# Modified:
-#   Sun 23 January 2022, 12:01:36 PM [GMT]
+#Created:
+#   Wed 10 March 2021, 12:34:47 PM [GMT+1]
+#Last edited:
+#   Fri 08 July 2022, 11:31:34 PM [GMT+1]
 #
-# Description:
+#Description:
 #   <Todo>
+#
+#Dependencies:
+#   <None>
 #
 
 getuptime() {
-    uptime -p >/dev/null 2>&1
+  uptime -p >/dev/null 2>&1
 
-    if [ "$?" -eq 0 ]; then
-        # Supports most Linux distro
-        # when the machine is up for less than '0' minutes then
-        # 'uptime -p' returns ONLY 'up', so we need to set a default value
-        UP_SET_OR_EMPTY=$(uptime -p | awk -F 'up ' '{print $2}')
-        UP=${UP_SET_OR_EMPTY:-'less than a minute'}
-    else
-        # Supports Mac OS X, Debian 7, etc
-        UP=$(uptime | sed -E 's/^[^,]*up *//; s/mins/minutes/; s/hrs?/hours/;
+  if [ "$?" -eq 0 ]; then
+    # Supports most Linux distro
+    # when the machine is up for less than '0' minutes then
+    # 'uptime -p' returns ONLY 'up', so we need to set a default value
+    UP_SET_OR_EMPTY=$(uptime -p | awk -F 'up ' '{print $2}')
+    UP=${UP_SET_OR_EMPTY:-'less than a minute'}
+  else
+    # Supports Mac OS X, Debian 7, etc
+    UP=$(uptime | sed -E 's/^[^,]*up *//; s/mins/minutes/; s/hrs?/hours/;
         s/([[:digit:]]+):0?([[:digit:]]+)/\1 hours, \2 minutes/;
         s/^1 hours/1 hour/; s/ 1 hours/ 1 hour/;
         s/min,/minutes,/; s/ 0 minutes,/ less than a minute,/; s/ 1 minutes/ 1 minute/;
         s/  / /; s/, *[[:digit:]]* users?.*//')
-    fi
+  fi
 
-    echo "$UP"
+  echo "$UP"
 }
 
 asksetting() {
-    options=":g Lock
+  options=":g Lock
 :y 望Sleep
 :b Logout
 :r Restart
 :r 襤Shutdown"
 
-    echo -e ">>h Uptime: $(getuptime)
+  echo -e ">>h Uptime: $(getuptime)
 $options" | repomenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Power Menu...}"
 }
 
 triggerFunction() {
-    init_system="$(cat /proc/1/comm)"
-    if [[ $init_system = "systemd" ]]; then
-        systemctl "$1"
-    elif [[ $init_system = "init" ]]; then
-        loginctl "$1"
-    elif [[ $init_system = "runit" ]]; then
-        loginctl "$1"
-    else
-        systemctl "$1"
-    fi
+  init_system="$(cat /proc/1/comm)"
+  if [[ $init_system = "systemd" ]]; then
+    systemctl "$1"
+  elif [[ $init_system = "init" ]]; then
+    loginctl "$1"
+  elif [[ $init_system = "runit" ]]; then
+    loginctl "$1"
+  else
+    systemctl "$1"
+  fi
 }
 
-if [ "$DESKTOP_SESSION" ]; then
-    wmde=$DESKTOP_SESSION
-else
-    id=$(xprop -root -notype _NET_SUPPORTING_WM_CHECK)
-    id=${id##* }
-    wm=$(xprop -id "$id" -notype -len 100 -f _NET_WM_NAME 8t)
-    wm=${wm/*WM_NAME = /}
-    wm=${wm/\"/}
-    wmde=${wm/\"*/}
-fi
+# if [ "$DESKTOP_SESSION" ]; then
+#   wmde=$DESKTOP_SESSION
+# else
+#   id=$(xprop -root -notype _NET_SUPPORTING_WM_CHECK)
+#   id=${id##* }
+#   wm=$(xprop -id "$id" -notype -len 100 -f _NET_WM_NAME 8t)
+#   wm=${wm/*WM_NAME = /}
+#   wm=${wm/\"/}
+#   wmde=${wm/\"*/}
+# fi
 
 LOOPSETTING="true"
 while [ -n "$LOOPSETTING" ]; do
-    CHOICE="$(asksetting "$@")"
-    [ -n "$CHOICE" ] || exit
-    unset LOOPSETTING
-    case "$CHOICE" in
-    *Logout)
-        pkill "$wmde"
-        ;;
-    *Lock)
-        multimonitorlock -l -- --time-str="%I:%M:%S %p"
-        ;;
-    *Shutdown)
-        triggerFunction poweroff
-        ;;
-    *Restart)
-        triggerFunction reboot
-        ;;
-    *Sleep)
-        triggerFunction suspend
-        ;;
-    *)
-        echo "Program terminated." && exit 1
-        ;;
-    esac
+  CHOICE="$(asksetting "$@")"
+  [ -n "$CHOICE" ] || exit
+  unset LOOPSETTING
+  case "$CHOICE" in
+  *Logout)
+    pkill -KILL -u "$USER"
+    ;;
+  *Lock)
+    multimonitorlock -l -- --time-str="%I:%M:%S %p"
+    ;;
+  *Shutdown)
+    triggerFunction poweroff
+    ;;
+  *Restart)
+    triggerFunction reboot
+    ;;
+  *Sleep)
+    triggerFunction suspend
+    ;;
+  *)
+    echo "Program terminated." && exit 1
+    ;;
+  esac
 done

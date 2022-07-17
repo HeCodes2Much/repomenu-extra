@@ -1,48 +1,51 @@
 #!/usr/bin/env bash
-# -*-coding:utf-8 -*-
-# Auto updated?
+#-*-coding:utf-8 -*-
+#Auto updated?
 #   Yes
 #File :
 #   repomenue_editor
-#Author:
+#Author :
 #   The-Repo-Club [wayne6324@gmail.com]
-#Github:
+#Github :
 #   https://github.com/The-Repo-Club/
 #
-# Created:
-#   Wed 10 March 2021, 12:34:47 PM [GMT]
-# Modified:
-#   Fri 21 January 2022, 02:29:56 PM [GMT]
+#Created:
+#   Wed 10 March 2021, 12:34:47 PM [GMT+1]
+#Last edited:
+#   Sun 17 July 2022, 03:11:08 PM [GMT+1]
 #
-# Description:
+#Description:
 #   <Todo>
+#
+#Dependencies:
+#   <None>
 #
 
 getsettings() {
-    TERMINAL=$(gsettings get org.therepoclub.repomenu.preferences terminal | sed s/\'//g)
-    WEBBROWSER=$(gsettings get org.therepoclub.repomenu.preferences webbrowser | sed s/\'//g)
-    FILEMANAGER=$(gsettings get org.therepoclub.repomenu.preferences filemanager | sed s/\'//g)
-    MAILREADER=$(gsettings get org.therepoclub.repomenu.preferences mailreader | sed s/\'//g)
-    TEXTEDITOR=$(gsettings get org.therepoclub.repomenu.preferences texteditor | sed s/\'//g)
-    HYPERVISOR=$(gsettings get org.therepoclub.repomenu.preferences hypervisor | sed s/\'//g)
-    GITBROWSER=$(gsettings get org.therepoclub.repomenu.preferences gitbrowser | sed s/\'//g)
+  TERMINAL=$(repo-exec terminal)
+  WEBBROWSER=$(repo-exec webbrowser)
+  FILEMANAGER=$(repo-exec filemanager)
+  MAILREADER=$(repo-exec mailreader)
+  TEXTEDITOR=$(repo-exec texteditor)
+  HYPERVISOR=$(repo-exec hypervisor)
+  GITBROWSER=$(repo-exec gitbrowser)
 }
 
 asksetting() {
-    options=$(ls "$HOME/.config/repomenu/scripts/")
+  options=$(ls "$HOME/.config/repomenu/scripts/")
 
-    echo ">>h Work on which script
+  echo ">>h Work on which script
 $options" | repomenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Search...}"
 }
 
 LOOPSETTING="true"
 getsettings
 while [ -n "$LOOPSETTING" ]; do
-    FILE="$HOME/.config/repomenu/scripts/$(asksetting)"
-    unset LOOPSETTING
-    if [ -f "$FILE" ]; then
-        $TEXTEDITOR "$FILE"
-    else
-        echo "Program terminated." && exit 1
-    fi
+  FILE="$HOME/.config/repomenu/scripts/$(asksetting)"
+  unset LOOPSETTING
+  if [ -f "$FILE" ]; then
+    $TEXTEDITOR "$FILE"
+  else
+    echo "Program terminated." && exit 1
+  fi
 done

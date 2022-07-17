@@ -2,6 +2,5 @@
 VERSION = 5.0
 
 # paths
-PREFIX = /usr
+PREFIX = /usr/local
 SHAREPREFIX = /usr/share
-

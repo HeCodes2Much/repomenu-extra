@@ -38,61 +38,61 @@ CYAN="\e[1:36m"
 readonly ALL_OFF RED GREEN YELLOW BLUE PURPLE CYAN
 
 getsettings() {
-    TERMINAL=$(gsettings get org.therepoclub.repomenu.preferences terminal | sed s/\'//g)
+  TERMINAL=$(repo-exec terminal)
 }
 
 asksetting() {
-    commands=
-    if command -v snaplist &> /dev/null; then
-        commands+=":g Snaplist\n:r Snapremove\n"
-    fi
+  commands=
+  if command -v snaplist &>/dev/null; then
+    commands+=":g Snaplist\n:r Snapremove\n"
+  fi
 
-    if command -v snaphome &> /dev/null; then
-        commands+=":p Snaphome\n"
-    fi
+  if command -v snaphome &>/dev/null; then
+    commands+=":p Snaphome\n"
+  fi
 
-    if command -v snaproot &> /dev/null; then
-        commands+=":r Snaproot\n"
-    fi
+  if command -v snaproot &>/dev/null; then
+    commands+=":r Snaproot\n"
+  fi
 
-    if command -v snapshot &> /dev/null; then
-        commands+=":r שׂSnapshot\n"
-    fi
-    echo -e "$commands" | sed '/^$/d' | repomenu -c -l 10 -w -300 -i -h -1 -bw 4 -q "${1:-Select snap package...}"
+  if command -v snapshot &>/dev/null; then
+    commands+=":r שׂSnapshot\n"
+  fi
+  echo -e "$commands" | sed '/^$/d' | repomenu -c -l 10 -w -300 -i -h -1 -bw 4 -q "${1:-Select snap package...}"
 }
 
 cmd_snaplist() {
-    pkexec snaplist "--menu" | repomenu -c -l 10 -w -300 -i -h -1 -bw 4 -q "${1:-Select snap package...}"
+  pkexec snaplist "--menu" | repomenu -c -l 10 -w -300 -i -h -1 -bw 4 -q "${1:-Select snap package...}"
 }
 
 LOOPSETTING="true"
 while [ -n "$LOOPSETTING" ]; do
-    CHOICE="$(asksetting)"
-    [ -n "$CHOICE" ] || exit
-    unset LOOPSETTING
-    getsettings
-    snap=$(echo $CHOICE | awk -F"Snap" '{print $2}')
-    case "$CHOICE" in
-        *list)
-            cmd_snaplist
-            ;;
-        *remove)
-            package=$(cmd_snaplist | awk '{print $2}')
-            [ -n "$package" ] || exit
-            pkexec btrfs subvolume delete $mnt/$package
-            ;;
-        *home)
-            $TERMINAL --title snapper --class snapper,Snapper -e sudo snap$snap
-            ;;
-        *root)
-            $TERMINAL --title snapper --class snapper,Snapper -e sudo snap$snap
-            ;;
-        *shot)
-            $TERMINAL --title snapper --class snapper,Snapper -e sudo snap$snap
-            ;;
-        *)
-            echo "Program terminated."
-            exit 1
-            ;;
-    esac
+  CHOICE="$(asksetting)"
+  [ -n "$CHOICE" ] || exit
+  unset LOOPSETTING
+  getsettings
+  snap=$(echo $CHOICE | awk -F"Snap" '{print $2}')
+  case "$CHOICE" in
+  *list)
+    cmd_snaplist
+    ;;
+  *remove)
+    package=$(cmd_snaplist | awk '{print $2}')
+    [ -n "$package" ] || exit
+    pkexec btrfs subvolume delete $mnt/$package
+    ;;
+  *home)
+    $TERMINAL --title snapper --class snapper,Snapper -e sudo snap$snap
+    ;;
+  *root)
+    $TERMINAL --title snapper --class snapper,Snapper -e sudo snap$snap
+    ;;
+  *shot)
+    $TERMINAL --title snapper --class snapper,Snapper -e sudo snap$snap
+    ;;
+  *)
+    echo "Program terminated."
+    exit 1
+    ;;
+  esac
 done

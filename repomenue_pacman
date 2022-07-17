@@ -1,71 +1,74 @@
 #!/usr/bin/env bash
-# -*-coding:utf-8 -*-
-# Auto updated?
+#-*-coding:utf-8 -*-
+#Auto updated?
 #   Yes
 #File :
 #   repomenue_pacman
-#Author:
+#Author :
 #   The-Repo-Club [wayne6324@gmail.com]
-#Github:
+#Github :
 #   https://github.com/The-Repo-Club/
 #
-# Created:
-#   Wed 10 March 2021, 12:34:47 PM [GMT]
-# Modified:
-#   Sun 23 January 2022, 05:53:39 PM [GMT]
+#Created:
+#   Wed 10 March 2021, 12:34:47 PM [GMT+1]
+#Last edited:
+#   Sun 17 July 2022, 03:15:02 PM [GMT+1]
 #
-# Description:
+#Description:
 #   <Todo>
+#
+#Dependencies:
+#   <None>
 #
 
 repomenuGetFunction() {
-    get=$(gsettings get org.therepoclub.repomenu.preferences "$1")
-    printf -v "${1^^}" '%s' "${get//\'/}"
+  get=$(repo-exec "$1")
+  printf -v "${1^^}" '%s' "${get//\'/}"
 }
 
 repowmGetFunction() {
-    get=$(gsettings get org.therepoclub.repowm.preferences "$1")
-    printf -v "${1^^}" '%s' "${get//\'/}"
+  get=$(repo-exec "$1")
+  printf -v "${1^^}" '%s' "${get//\'/}"
 }
 
 getsettings() {
-    repomenuGetFunction terminal
-    repomenuGetFunction webbrowser
-    repomenuGetFunction filemanager
-    repomenuGetFunction mailreader
-    repomenuGetFunction texteditor
-    repomenuGetFunction hypervisor
-    repomenuGetFunction gitbrowser
-    repomenuGetFunction musicplayer
-    repomenuGetFunction videoplayer
+  repomenuGetFunction terminal
+  repomenuGetFunction webbrowser
+  repomenuGetFunction filemanager
+  repomenuGetFunction mailreader
+  repomenuGetFunction texteditor
+  repomenuGetFunction hypervisor
+  repomenuGetFunction gitbrowser
+  repomenuGetFunction musicplayer
+  repomenuGetFunction videoplayer
 
-    repowmGetFunction systemmonitorcmd
-    repowmGetFunction instasettingscmd
-    repowmGetFunction startmenucmd
-    repowmGetFunction clipmenucmd
-    repowmGetFunction smartmenucmd
-    repowmGetFunction powermenucmd
-    repowmGetFunction repomenucmd
-    repowmGetFunction passmenucmd
+  repowmGetFunction systemmonitorcmd
+  repowmGetFunction instasettingscmd
+  repowmGetFunction startmenucmd
+  repowmGetFunction clipmenucmd
+  repowmGetFunction smartmenucmd
+  repowmGetFunction powermenucmd
+  repowmGetFunction repomenucmd
+  repowmGetFunction passmenucmd
 }
 
 cleanup() {
-    cleanPackages=()
-    for p in $(pacman -Qtdq); do
-        cleanPackages+=${p##*/}$' '
-    done
-    if [[ ! -z "$cleanPackages" ]]; then
-        $TERMINAL -e bash -c "(sudo pacman -Rns $cleanPackages) && notify-send 'repomenue_pacman' 'finished cleaning '$cleanPackages"
-        #notify-send "repomenue_pacman" "finished cleaning $cleanPackages"
-    else
-        $TERMINAL -e bash -c "notify-send 'Notice' 'No unused dependencies found!'"
-    fi
+  cleanPackages=()
+  for p in $(pacman -Qtdq); do
+    cleanPackages+=${p##*/}$' '
+  done
+  if [[ ! -z "$cleanPackages" ]]; then
+    $TERMINAL -e bash -c "(sudo pacman -Rns $cleanPackages) && notify-send 'repomenue_pacman' 'finished cleaning '$cleanPackages"
+    #notify-send "repomenue_pacman" "finished cleaning $cleanPackages"
+  else
+    $TERMINAL -e bash -c "notify-send 'Notice' 'No unused dependencies found!'"
+  fi
 }
 
 # simple pacman GUI for instantOS
 getsettings
 choicemenu() {
-    options=":g Install
+  options=":g Install
 :b 蓮Browse
 :r Remove
 :y Cleanup
@@ -73,52 +76,52 @@ choicemenu() {
 :b Update
 :r Close Pacman"
 
-    echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Settings...}" -x 10000
+  echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Settings...}" -x 10000
 }
 
 LOOPSETTING="true"
 while [ -n "$LOOPSETTING" ]; do
 
-    CHOICE="$(choicemenu)"
-    [ -n "$CHOICE" ] || exit
-    case "$CHOICE" in
-    *Install)
-        PACKAGE="$(imenu -i 'enter package name')"
-        if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
-        echo "installing $PACKAGE"
-        $TERMINAL -e bash -c "(sudo pacman -S $PACKAGE) && notify-send 'repomenue_pacman' 'finished installing '$PACKAGE"
-        ;;
-    *Remove)
-        PACKAGE="$(imenu -i 'enter package name')"
-        if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
-        $TERMINAL -e bash -c "(sudo pacman -R $PACKAGE) && notify-send 'repomenue_pacman' 'finished uninstalling '$PACKAGE"
-        ;;
-    *Browse)
-        if pacman -Qs "octopi" >/dev/null; then
-            octopi &
-        elif pacman -Qs "pamac" >/dev/null; then
-            pamac &
-        elif pacman -Qs "pkgbrowser" >/dev/null; then
-            pkgbrowser &
-        else
-            $WEBBROWSER "https://archlinux.org/packages/"
-        fi
-        echo "Program terminated." && exit
-        ;;
-    *Cleanup)
-        cleanup
-        ;;
-    *AUR*)
-        PACKAGE="$(imenu -i 'enter package name')"
-        if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
-        $TERMINAL -e bash -c "(auracle clone $PACKAGE -C ~/.cache/pkg/) && notify-send 'repomenue_pacman' 'finished downloading '$PACKAGE"
-        ;;
-    *Update)
-        $TERMINAL -e bash -c "(sudo pacman -Syyu) && notify-send 'repomenue_pacman' 'finished updating'"
-        ;;
-    *Pacman)
-        repomenue_settings &
-        echo "Program terminated." && exit
-        ;;
-    esac
+  CHOICE="$(choicemenu)"
+  [ -n "$CHOICE" ] || exit
+  case "$CHOICE" in
+  *Install)
+    PACKAGE="$(imenu -i 'enter package name')"
+    if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
+    echo "installing $PACKAGE"
+    $TERMINAL -e bash -c "(sudo pacman -S $PACKAGE) && notify-send 'repomenue_pacman' 'finished installing '$PACKAGE"
+    ;;
+  *Remove)
+    PACKAGE="$(imenu -i 'enter package name')"
+    if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
+    $TERMINAL -e bash -c "(sudo pacman -R $PACKAGE) && notify-send 'repomenue_pacman' 'finished uninstalling '$PACKAGE"
+    ;;
+  *Browse)
+    if pacman -Qs "octopi" >/dev/null; then
+      octopi &
+    elif pacman -Qs "pamac" >/dev/null; then
+      pamac &
+    elif pacman -Qs "pkgbrowser" >/dev/null; then
+      pkgbrowser &
+    else
+      $WEBBROWSER "https://archlinux.org/packages/"
+    fi
+    echo "Program terminated." && exit
+    ;;
+  *Cleanup)
+    cleanup
+    ;;
+  *AUR*)
+    PACKAGE="$(imenu -i 'enter package name')"
+    if [ -z "$PACKAGE" ]; then echo "Program terminated." && exit; fi
+    $TERMINAL -e bash -c "(auracle clone $PACKAGE -C ~/.cache/pkg/) && notify-send 'repomenue_pacman' 'finished downloading '$PACKAGE"
+    ;;
+  *Update)
+    $TERMINAL -e bash -c "(sudo pacman -Syyu) && notify-send 'repomenue_pacman' 'finished updating'"
+    ;;
+  *Pacman)
+    repomenue_settings &
+    echo "Program terminated." && exit
+    ;;
+  esac
 done

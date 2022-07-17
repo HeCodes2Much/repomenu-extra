@@ -1,185 +1,186 @@
 #!/usr/bin/env bash
-# -*-coding:utf-8 -*-
-# Auto updated?
+#-*-coding:utf-8 -*-
+#Auto updated?
 #   Yes
 #File :
 #   repomenue_settings
-#Author:
+#Author :
 #   The-Repo-Club [wayne6324@gmail.com]
-#Github:
+#Github :
 #   https://github.com/The-Repo-Club/
 #
-# Created:
-#   Wed 10 March 2021, 12:34:47 PM [GMT]
-# Modified:
-#   Fri 21 January 2022, 02:29:56 PM [GMT]
+#Created:
+#   Wed 10 March 2021, 12:34:47 PM [GMT+1]
+#Last edited:
+#   Sun 17 July 2022, 03:17:44 PM [GMT+1]
 #
-# Description:
+#Description:
 #   <Todo>
 #
-
+#Dependencies:
+#   <None>
+#
 
 getsettings() {
-    TERMINAL=$(gsettings get org.therepoclub.repomenu.preferences terminal | sed s/\'//g)
-    WEBBROWSER=$(gsettings get org.therepoclub.repomenu.preferences webbrowser | sed s/\'//g)
-    FILEMANAGER=$(gsettings get org.therepoclub.repomenu.preferences filemanager | sed s/\'//g)
-    MAILREADER=$(gsettings get org.therepoclub.repomenu.preferences mailreader | sed s/\'//g)
-    TEXTEDITOR=$(gsettings get org.therepoclub.repomenu.preferences texteditor | sed s/\'//g)
-    HYPERVISOR=$(gsettings get org.therepoclub.repomenu.preferences hypervisor | sed s/\'//g)
-    GITBROWSER=$(gsettings get org.therepoclub.repomenu.preferences gitbrowser | sed s/\'//g)
+  TERMINAL=$(repo-exec terminal)
+  WEBBROWSER=$(repo-exec webbrowser)
+  FILEMANAGER=$(repo-exec filemanager)
+  MAILREADER=$(repo-exec mailreader)
+  TEXTEDITOR=$(repo-exec texteditor)
+  HYPERVISOR=$(repo-exec hypervisor)
+  GITBROWSER=$(repo-exec gitbrowser)
 
-    CLIPMENU=$(gsettings get org.therepoclub.instawm.preferences clipmenucmd | sed s/\'//g)
-    INSTASETTINGS=$(gsettings get org.therepoclub.instawm.preferences instasettingscmd | sed s/\'//g)
-    POWERMENU=$(gsettings get org.therepoclub.instawm.preferences powermenucmd | sed s/\'//g)
-    SMARTMENU=$(gsettings get org.therepoclub.instawm.preferences smartmenucmd | sed s/\'//g)
-    STARTMENU=$(gsettings get org.therepoclub.instawm.preferences startmenucmd | sed s/\'//g)
-    SYSTEMMONITOR=$(gsettings get org.therepoclub.instawm.preferences systemmonitorcmd | sed s/\'//g)
+  CLIPMENU=$(repo-exec clipmenucmd)
+  INSTASETTINGS=$(repo-exec settingscmd)
+  POWERMENU=$(repo-exec powermenucmd)
+  SMARTMENU=$(repo-exec smartmenucmd)
+  STARTMENU=$(repo-exec startmenucmd)
+  SYSTEMMONITOR=$(repo-exec systemmonitorcmd)
 }
 
 selectterminal() {
-    getsettings
-    selectdefault terminal "$TERMINAL"
+  getsettings
+  selectdefault terminal "$TERMINAL"
 }
 
 selectwebbrowser() {
-    getsettings
-    selectdefault webbrowser "$WEBBROWSER"
+  getsettings
+  selectdefault webbrowser "$WEBBROWSER"
 }
 
 selectfilemanager() {
-    getsettings
-    selectdefault filemanager "$FILEMANAGER"
+  getsettings
+  selectdefault filemanager "$FILEMANAGER"
 }
 
 selectmailreader() {
-    getsettings
-    selectdefault mailreader "$MAILREADER"
+  getsettings
+  selectdefault mailreader "$MAILREADER"
 }
 
 selecttexteditor() {
-    getsettings
-    selectdefault texteditor "$TEXTEDITOR"
+  getsettings
+  selectdefault texteditor "$TEXTEDITOR"
 }
 
 selecthypervisor() {
-    getsettings
-    selectdefault hypervisor "$HYPERVISOR"
+  getsettings
+  selectdefault hypervisor "$HYPERVISOR"
 }
 
 selectgitbrowser() {
-    getsettings
-    selectdefault gitbrowser "$GITBROWSER"
+  getsettings
+  selectdefault gitbrowser "$GITBROWSER"
 }
 
 selectclipmenucmd() {
-    getsettings
-    selectwmdefault clipmenucmd "$CLIPMENU"
+  getsettings
+  selectwmdefault clipmenucmd "$CLIPMENU"
 }
 
 selectinstasettingscmd() {
-    getsettings
-    selectwmdefault instasettingscmd "$INSTASETTINGS"
+  getsettings
+  selectwmdefault instasettingscmd "$INSTASETTINGS"
 }
 
 selectpowermenucmd() {
-    getsettings
-    selectwmdefault powermenucmd "$POWERMENU"
+  getsettings
+  selectwmdefault powermenucmd "$POWERMENU"
 }
 
 selectsmartmenucmd() {
-    getsettings
-    selectwmdefault smartmenucmd "$SMARTMENU"
+  getsettings
+  selectwmdefault smartmenucmd "$SMARTMENU"
 }
 
 selectstartmenucmd() {
-    getsettings
-    selectwmdefault startmenucmd "$STARTMENU"
+  getsettings
+  selectwmdefault startmenucmd "$STARTMENU"
 }
 
 selectsystemmonitorcmd() {
-    getsettings
-    selectwmdefault systemmonitorcmd "$SYSTEMMONITOR"
+  getsettings
+  selectwmdefault systemmonitorcmd "$SYSTEMMONITOR"
 }
 
 selectdefaultoptions() {
-    options=">>h Default (${@:2})
+  options=">>h Default (${@:2})
 :b Custom
 :y Back
 :r Close Settings"
 
-    echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
+  echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 selectdefault() {
-    LOOPSETTING="true"
-    while [ -n "$LOOPSETTING" ]; do
-        CHOICE="$(selectdefaultoptions $@)"
-        [ -n "$CHOICE" ] || exit
-        case "$CHOICE" in
-        *Custom)
-            CUSTOMAPP="$(imenu -i "Set custom $1")"
-            [ -z "$CUSTOMAPP" ] && echo "Program terminated." && exit
-            if imenu -c "Would you like to set $1 to $CUSTOMAPP?"; then
-                gsettings set org.therepoclub.repomenu.preferences $1 $CUSTOMAPP
-                notify-send "repomenue_settings" "$1 changed from $2 to $CUSTOMAPP" && asksetting
-            else
-                defaultapplicationsettings
-                echo "Program terminated." && exit
-            fi
-            ;;
-        *Back)
-            defaultapplicationsettings
-            echo "Program terminated." && exit
-            ;;
-        *)
-            echo "Program terminated." && exit
-            ;;
-        esac
-    done
+  LOOPSETTING="true"
+  while [ -n "$LOOPSETTING" ]; do
+    CHOICE="$(selectdefaultoptions $@)"
+    [ -n "$CHOICE" ] || exit
+    case "$CHOICE" in
+    *Custom)
+      CUSTOMAPP="$(imenu -i "Set custom $1")"
+      [ -z "$CUSTOMAPP" ] && echo "Program terminated." && exit
+      if imenu -c "Would you like to set $1 to $CUSTOMAPP?"; then
+        repo-exec $1 $CUSTOMAPP
+        notify-send "repomenue_settings" "$1 changed from $2 to $CUSTOMAPP" && asksetting
+      else
+        defaultapplicationsettings
+        echo "Program terminated." && exit
+      fi
+      ;;
+    *Back)
+      defaultapplicationsettings
+      echo "Program terminated." && exit
+      ;;
+    *)
+      echo "Program terminated." && exit
+      ;;
+    esac
+  done
 }
 
 selectwmdefault() {
-    LOOPSETTING="true"
-    while [ -n "$LOOPSETTING" ]; do
-        CHOICE="$(selectdefaultoptions $@)"
-        [ -n "$CHOICE" ] || exit
-        case "$CHOICE" in
-        *Custom)
-            CUSTOMAPP="$(imenu -i "Set custom $1")"
-            [ -z "$CUSTOMAPP" ] && echo "Program terminated." && exit
-            if imenu -c "Would you like to set $1 to $CUSTOMAPP?"; then
-                gsettings set org.therepoclub.instawm.preferences $1 $CUSTOMAPP
-                notify-send "repomenue_settings" "$1 changed from $2 to $CUSTOMAPP" && asksetting
-            else
-                defaultapplicationsettings
-                echo "Program terminated." && exit
-            fi
-            ;;
-        *Back)
-            defaultapplicationsettings
-            echo "Program terminated." && exit
-            ;;
-        *)
-            echo "Program terminated." && exit
-            ;;
-        esac
-    done
+  LOOPSETTING="true"
+  while [ -n "$LOOPSETTING" ]; do
+    CHOICE="$(selectdefaultoptions $@)"
+    [ -n "$CHOICE" ] || exit
+    case "$CHOICE" in
+    *Custom)
+      CUSTOMAPP="$(imenu -i "Set custom $1")"
+      [ -z "$CUSTOMAPP" ] && echo "Program terminated." && exit
+      if imenu -c "Would you like to set $1 to $CUSTOMAPP?"; then
+        repo-exec $1 $CUSTOMAPP
+        notify-send "repomenue_settings" "$1 changed from $2 to $CUSTOMAPP" && asksetting
+      else
+        defaultapplicationsettings
+        echo "Program terminated." && exit
+      fi
+      ;;
+    *Back)
+      defaultapplicationsettings
+      echo "Program terminated." && exit
+      ;;
+    *)
+      echo "Program terminated." && exit
+      ;;
+    esac
+  done
 }
 
-
 defaultapplicationsettingsoptions() {
-    getsettings
-    if command -v repowm &> /dev/null; then
-        wm="\n>>h Window Manager defaults
+  getsettings
+  if command -v repowm &>/dev/null; then
+    wm="\n>>h Window Manager defaults
 :g ClipMenu
 :g WMSettings
 :g PowerMenu
 :g SmartMenu
 :g StartMenu
 :g SystemMonitor"
-    fi
+  fi
 
-    apps=">>h Default applications
+  apps=">>h Default applications
 :b Terminal Emulator
 :b Web Browser
 :b File Manager
@@ -188,176 +189,176 @@ defaultapplicationsettingsoptions() {
 :b Hypervisor
 :b Git Client"
 
-    options="\n>>h Options
+  options="\n>>h Options
 :y Back
 :r Close Settings"
 
-    echo -e "$apps$wm$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
+  echo -e "$apps$wm$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 
 }
 
 defaultapplicationsettings() {
-    LOOPSETTING="true"
-    while [ -n "$LOOPSETTING" ]; do
-        CHOICE="$(defaultapplicationsettingsoptions)"
-        [ -n "$CHOICE" ] || exit
-        case "$CHOICE" in
-        *Emulator)
-            selectterminal
-            ;;
-        *Browser)
-            selectwebbrowser
-            ;;
-        *Manager)
-            selectfilemanager
-            ;;
-        *Reader)
-            selectmailreader
-            ;;
-        *Editor)
-            selecttexteditor
-            ;;
-        *Hypervisor)
-            selecthypervisor
-            ;;
-        *Client)
-            selectgitbrowser
-            ;;
-        *ClipMenu)
-            selectclipmenucmd
-            ;;
-        *WMSettings)
-            selectinstasettingscmd
-            ;;
-        *PowerMenu)
-            selectpowermenucmd
-            ;;
-        *SmartMenu)
-            selectsmartmenucmd
-            ;;
-        *StartMenu)
-            selectstartmenucmd
-            ;;
-        *SystemMonitor)
-            selectsystemmonitorcmd
-            ;;
-        *Back)
-            asksetting
-            echo "Program terminated." && exit
-            ;;
-        *)
-            echo "Program terminated." && exit
-            ;;
-        esac
-    done
+  LOOPSETTING="true"
+  while [ -n "$LOOPSETTING" ]; do
+    CHOICE="$(defaultapplicationsettingsoptions)"
+    [ -n "$CHOICE" ] || exit
+    case "$CHOICE" in
+    *Emulator)
+      selectterminal
+      ;;
+    *Browser)
+      selectwebbrowser
+      ;;
+    *Manager)
+      selectfilemanager
+      ;;
+    *Reader)
+      selectmailreader
+      ;;
+    *Editor)
+      selecttexteditor
+      ;;
+    *Hypervisor)
+      selecthypervisor
+      ;;
+    *Client)
+      selectgitbrowser
+      ;;
+    *ClipMenu)
+      selectclipmenucmd
+      ;;
+    *WMSettings)
+      selectinstasettingscmd
+      ;;
+    *PowerMenu)
+      selectpowermenucmd
+      ;;
+    *SmartMenu)
+      selectsmartmenucmd
+      ;;
+    *StartMenu)
+      selectstartmenucmd
+      ;;
+    *SystemMonitor)
+      selectsystemmonitorcmd
+      ;;
+    *Back)
+      asksetting
+      echo "Program terminated." && exit
+      ;;
+    *)
+      echo "Program terminated." && exit
+      ;;
+    esac
+  done
 }
 
 soundsettingsoptions() {
-    options=">>h Sound settings
+  options=">>h Sound settings
 :b ﰝSystem Audio
 :y Back
 :r Close Settings"
 
-    echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
+  echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 soundsettings() {
-    LOOPSETTING="true"
-    while [ -n "$LOOPSETTING" ]; do
-        CHOICE="$(soundsettingsoptions)"
-        [ -n "$CHOICE" ] || exit
-        case "$CHOICE" in
-        *Audio)
-            pavucontrol &
-            echo "Program terminated." && exit
-            ;;
-        *Back)
-            asksetting
-            echo "Program terminated." && exit
-            ;;
-        *)
-            echo "Program terminated." && exit
-            ;;
-        esac
-    done
+  LOOPSETTING="true"
+  while [ -n "$LOOPSETTING" ]; do
+    CHOICE="$(soundsettingsoptions)"
+    [ -n "$CHOICE" ] || exit
+    case "$CHOICE" in
+    *Audio)
+      pavucontrol &
+      echo "Program terminated." && exit
+      ;;
+    *Back)
+      asksetting
+      echo "Program terminated." && exit
+      ;;
+    *)
+      echo "Program terminated." && exit
+      ;;
+    esac
+  done
 }
 
 appearancesettingsoptions() {
-    options=">>h Appearance settings
+  options=">>h Appearance settings
 :b Application Appearance
 :b Wallpaper
 :y Back
 :r Close Settings"
 
-    echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
+  echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 appearancesettings() {
-    LOOPSETTING="true"
-    while [ -n "$LOOPSETTING" ]; do
-        CHOICE="$(appearancesettingsoptions)"
-        [ -n "$CHOICE" ] || exit
-        case $CHOICE in
-        *Appearance)
-            lxappearance
-            echo "Program terminated." && exit
-            ;;
-        *Wallpaper)
-            wallpapersettings
-            echo "Program terminated." && exit
-            ;;
-        *Back)
-            asksetting
-            echo "Program terminated." && exit
-            ;;
-        *)
-            echo "Program terminated." && exit
-            ;;
-        esac
-    done
+  LOOPSETTING="true"
+  while [ -n "$LOOPSETTING" ]; do
+    CHOICE="$(appearancesettingsoptions)"
+    [ -n "$CHOICE" ] || exit
+    case $CHOICE in
+    *Appearance)
+      lxappearance
+      echo "Program terminated." && exit
+      ;;
+    *Wallpaper)
+      wallpapersettings
+      echo "Program terminated." && exit
+      ;;
+    *Back)
+      asksetting
+      echo "Program terminated." && exit
+      ;;
+    *)
+      echo "Program terminated." && exit
+      ;;
+    esac
+  done
 }
 
 displaysettingsoptions() {
-    options=">>h Display Settings
+  options=">>h Display Settings
 :b Change Display Settings
 :g Save Current Settings
 :g Load Current Settings
 :y Back
 :r Close Settings"
 
-    echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
+  echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 displaysettings() {
-    LOOPSETTING="true"
-    while [ -n "$LOOPSETTING" ]; do
-        CHOICE="$(displaysettingsoptions)"
-        [ -n "$CHOICE" ] || exit
-        case $CHOICE in
-        *Display*)
-            repomenue_randr &
-            ;;
-        *Save*)
-            notify-send "repomenue_settings" "Saving monitor settings"
-            autorandr --force --save $XDG_CURRENT_DESKTOP
-            ;;
-        *Load*)
-            notify-send "repomenue_settings" "Loading monitor settings"
-            autorandr --force --load $XDG_CURRENT_DESKTOP
-            ;;
-        *Back)
-            asksetting
-            echo "Program terminated." && exit
-            ;;
-        *)
-            echo "Program terminated." && exit
-            ;;
-        esac
-    done
+  LOOPSETTING="true"
+  while [ -n "$LOOPSETTING" ]; do
+    CHOICE="$(displaysettingsoptions)"
+    [ -n "$CHOICE" ] || exit
+    case $CHOICE in
+    *Display*)
+      repomenue_randr &
+      ;;
+    *Save*)
+      notify-send "repomenue_settings" "Saving monitor settings"
+      autorandr --force --save $XDG_CURRENT_DESKTOP
+      ;;
+    *Load*)
+      notify-send "repomenue_settings" "Loading monitor settings"
+      autorandr --force --load $XDG_CURRENT_DESKTOP
+      ;;
+    *Back)
+      asksetting
+      echo "Program terminated." && exit
+      ;;
+    *)
+      echo "Program terminated." && exit
+      ;;
+    esac
+  done
 }
 
 asksettingoptions() {
-    options=">>h Settings
+  options=">>h Settings
 :b ﱘSound
 :b Network
 :b Display
@@ -365,69 +366,69 @@ asksettingoptions() {
 :b Default Applications
 :r Close Settings"
 
-    echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
+  echo -e "$options" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search Settings...}" -x 10000
 }
 
 asksetting() {
-    LOOPSETTING="true"
-    while [ -n "$LOOPSETTING" ]; do
-        SETTING="$(asksettingoptions)"
-        [ -n "$SETTING" ] || exit
-        unset LOOPSETTING
-        case "$SETTING" in
-        *Sound)
-            soundsettings
-            ;;
-        *Appearance)
-            appearancesettings
-            ;;
-        *Software)
-            repomenue_pacman &
-            ;;
-        *Display)
-            displaysettings
-            ;;
-        *Keyboard)
-            keyboardsettings
-            ;;
-        *Bluetooth)
-            bluetoothsettings
-            ;;
-        *Power)
-            xfce4-power-manager-Search Settings &
-            ;;
-        *Language)
-            languagesettings
-            ;;
-        *Network)
-            repomenue_network &
-            ;;
-        *Storage)
-            storagesettings
-            ;;
-        *Advanced)
-            advancedsettings
-            ;;
-        *Mouse)
-            mousesettings
-            ;;
-        *Date)
-            timesettings
-            ;;
-        *Applications)
-            defaultapplicationsettings
-            ;;
-        *)
-            echo "Program terminated." && exit
-        ;;
-        esac
-    done
+  LOOPSETTING="true"
+  while [ -n "$LOOPSETTING" ]; do
+    SETTING="$(asksettingoptions)"
+    [ -n "$SETTING" ] || exit
+    unset LOOPSETTING
+    case "$SETTING" in
+    *Sound)
+      soundsettings
+      ;;
+    *Appearance)
+      appearancesettings
+      ;;
+    *Software)
+      repomenue_pacman &
+      ;;
+    *Display)
+      displaysettings
+      ;;
+    *Keyboard)
+      keyboardsettings
+      ;;
+    *Bluetooth)
+      bluetoothsettings
+      ;;
+    *Power)
+      xfce4-power-manager-Search Settings &
+      ;;
+    *Language)
+      languagesettings
+      ;;
+    *Network)
+      repomenue_network &
+      ;;
+    *Storage)
+      storagesettings
+      ;;
+    *Advanced)
+      advancedsettings
+      ;;
+    *Mouse)
+      mousesettings
+      ;;
+    *Date)
+      timesettings
+      ;;
+    *Applications)
+      defaultapplicationsettings
+      ;;
+    *)
+      echo "Program terminated." && exit
+      ;;
+    esac
+  done
 }
 
 asksetting
 
 testsettings() {
-">>h Settings
+  ">>h Settings
 :b 墳Sound
 :b Network
 :b Appearance

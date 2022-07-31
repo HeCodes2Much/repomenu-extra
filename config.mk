@@ -1,6 +1,6 @@
 # repomenu version
-VERSION = 5.0
+VERSION = 2022.07.19
 
 # paths
-PREFIX = /usr/local
+PREFIX = /usr
 SHAREPREFIX = /usr/share

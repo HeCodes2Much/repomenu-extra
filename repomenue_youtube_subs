@@ -11,8 +11,8 @@
 #
 #Created:
 #   Sun 03 January 2021, 05:09:33 PM [GMT]
-#Last edited:
-#   Sun 17 July 2022, 03:18:16 PM [GMT+1]
+#Modified:
+#   Fri 09 September 2022, 08:14:11 PM [GMT+1]
 #
 #Description:
 #   Watch your youtube subscriptions without a youtube account
@@ -20,6 +20,10 @@
 #
 #   The $SUBS_FILE is a text file containing usernames or channel IDs
 #   comments and blank lines are ignored.
+#
+#
+#Dependencies:
+#   repomenu
 #
 
 repomenus() {

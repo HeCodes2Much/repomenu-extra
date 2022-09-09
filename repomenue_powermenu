@@ -2,17 +2,17 @@
 #-*-coding:utf-8 -*-
 #Auto updated?
 #   Yes
-#File :
+#File:
 #   repomenue_powermenu
-#Author :
+#Author:
 #   The-Repo-Club [wayne6324@gmail.com]
-#Github :
+#Github:
 #   https://github.com/The-Repo-Club/
 #
 #Created:
 #   Wed 10 March 2021, 12:34:47 PM [GMT+1]
-#Last edited:
-#   Fri 08 July 2022, 11:31:34 PM [GMT+1]
+#Modified:
+#   Sun 14 August 2022, 11:26:55 AM [GMT+1]
 #
 #Description:
 #   <Todo>
@@ -50,7 +50,7 @@ asksetting() {
 :r 襤Shutdown"
 
   echo -e ">>h Uptime: $(getuptime)
-$options" | repomenu -c -l 10 -w -400 -i -h -1 -bw 4 -q "${1:-Power Menu...}"
+$options" | repomenu -c -l 10 -w -400 -i -h -1 -bw 2 -q "${1:-Power Menu...}"
 }
 
 triggerFunction() {
@@ -65,17 +65,6 @@ triggerFunction() {
     systemctl "$1"
   fi
 }
-
-# if [ "$DESKTOP_SESSION" ]; then
-#   wmde=$DESKTOP_SESSION
-# else
-#   id=$(xprop -root -notype _NET_SUPPORTING_WM_CHECK)
-#   id=${id##* }
-#   wm=$(xprop -id "$id" -notype -len 100 -f _NET_WM_NAME 8t)
-#   wm=${wm/*WM_NAME = /}
-#   wm=${wm/\"/}
-#   wmde=${wm/\"*/}
-# fi
 
 LOOPSETTING="true"
 while [ -n "$LOOPSETTING" ]; do

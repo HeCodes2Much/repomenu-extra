@@ -12,7 +12,7 @@
 # Created:
 #   Wed 10 March 2021, 12:34:47 PM [GMT]
 # Modified:
-#   Fri 21 January 2022, 02:30:01 PM [GMT]
+#   Fri 09 September 2022, 08:19:06 PM [GMT+1]
 #
 # Description:
 #   <Todo>
@@ -53,7 +53,7 @@ asksetting() {
   fi
   echo -e ">>h Select a song to play.
 ${options::-1}
-:r Close music player" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -x 10000 -wm
+:r Close music player" | repomenu -ps 1 -l 20 -w -400 -i -h -1 -y -1 -bw 4 -q "${1:-Search...}" -x 10000
 }
 
 LOOPSETTING="true"
